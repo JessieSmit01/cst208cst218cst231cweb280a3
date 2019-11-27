@@ -22,7 +22,7 @@ require_once 'ORM/Entity.php';
  *  -The vehicle year.
  *
  */
-class Vehicle
+class Vehicle extends ORM\Entity
 {
     //This vehicleID will be the primary key and unique identifier for the vehicle.
     //This will be auto incrementing
@@ -124,11 +124,11 @@ class Vehicle
     public function __construct()
     {
         //here the developer can set any protected variables
-        $this->addColumnDefinition("vehicleID", "INT", "PRIMARY KEY AUTOINCREMENT"); //primary key
+        $this->addColumnDefinition("vehicleID", "INTEGER", "PRIMARY KEY AUTOINCREMENT"); //primary key
         $this->addColumnDefinition("make", "nvarchar(25)", "not null"); //required
         $this->addColumnDefinition("model", "nvarchar(25)", "not null"); //required
         $this->addColumnDefinition("type", "nvarchar(10)", "not null"); //required
-        $this->addColumnDefinition("year", "INT", ""); //not specified as required
+        $this->addColumnDefinition("year", "INTEGER", ""); //not specified as required
 
 
         //add display names for each field
