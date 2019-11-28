@@ -74,9 +74,11 @@ class Vehicle extends ORM\Entity
     public $model;
     //keeps track of vehicle type (example: Sedan, Compact, Truck)
     //10 characters max.
+    //TODO:make sure only valid types are Sedan Compact Cross Over and Truck
     public function validate_type()
     {
         $validationResult = [];
+        $validTypes = ['Sedan', 'Compact', 'Cross Over', 'Truck'];
         //check if type is empty
         if(empty(trim($this->type)))
         {
@@ -84,6 +86,7 @@ class Vehicle extends ORM\Entity
             $validationResult ['type'] = $this->getDisplayName('type') . ' cannot be empty or all spaces';
         }
         //check if the make it greater than 10 characters. If it is, add an error message
+        else if(!in_array($this->type, $validTypes)){$validationResult ['type'] = $this->getDisplayName('type') . ' must be either Sedan, Compact, Cross Over, or Truck';}
         else if(strlen($this->type) > 10) {$validationResult ['type'] = $this->getDisplayName('type') . ' cannot be greater than 10 characters';}
         //return any errors
         return $validationResult;
