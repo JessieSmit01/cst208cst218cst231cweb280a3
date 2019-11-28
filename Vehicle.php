@@ -31,7 +31,7 @@ class Vehicle extends ORM\Entity
         $validationResult = [];
         //check to make sure that the vehicleID is an integer greater than 0
         //vehicleID must be null since the table will need to autoincrement the value of vehicleID from the previous record if one exists
-        if(!is_int($this->vehicleID) || $this->vehicleID <= 0 || !$this->vehicleID == null) //vehicle id is not an int or less than or equal to zero or isn't null - invalid
+        if($this->vehicleID != null && $this->vehicleID <= 0) //vehicle id is not an int or less than or equal to zero or isn't null - invalid
         {
             $validationResult ['vehicleID'] = $this->getDisplayName('vehicleID') . ' must be a unique autoincrementing integer greater than zero';
         }
@@ -95,13 +95,19 @@ class Vehicle extends ORM\Entity
     public function validate_year()
     {
         $validationResult = [];
+        if($this->year === null || $this->year === '') //check if year is null or empty - it is not required so just return no errors
+        {
+            return $validationResult;
+        }
+        $vDate = strtotime("January 1 " . $this->year);
+        $upperBoundDate = strtotime("+2 Years", time());
 
         //ensure that the year is an int and greater than 0
-        if(!is_int($this->year) || $this->year < 0)
+        if( $vDate === false || $this->year < 0)
         {
-            $validationResult ['year'] = $this->getDisplayName('year') .  ' must be an integer greater than 0';
+            $validationResult ['year'] = $this->getDisplayName('year') .  ' must be an integer greater than or equal to 0';
         }
-        //used https://www.w3schools.com/php/php_date.asp to understand the functions
+        //used https://www.w3schools.com/php/php_date.asp to understand the function
         //mktime and strtotime
         //mktime takes in an integer for hour, minute, second, month, day, and year
         //1.since we only have the year, I set everything to null but the year
@@ -111,7 +117,8 @@ class Vehicle extends ORM\Entity
         //  it will use the string (in this case the string is '+2 years'
         //  and add two years to the date passed in.
         //4.Using those two date objects i can compare them and ensure the Vehicle year is valid
-        else if(!mktime(null,null,null,null,null,$this->year) < strtotime("+2 Years", date("Y"))) //Used https://www.w3schools.com/php/php_date.asp to understand how to get the current date
+
+        else if(!($vDate < $upperBoundDate)) //Used https://www.w3schools.com/php/php_date.asp to understand how to get the current date
         {                                                                                                                                       //call date() and pass in the format you would like so I passed in 'Y' to get the current year
             $validationResult ['year'] = $this->getDisplayName('year') . ' must be less than the current year plus 2 years';
         }
