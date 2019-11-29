@@ -26,6 +26,12 @@ class Vehicle extends ORM\Entity
 {
     //This vehicleID will be the primary key and unique identifier for the vehicle.
     //This will be auto incrementing
+    /**
+     *  This function will validate the vehicle id.
+     * Vehicle id should be null when POSTING to database since the vehicleID will be an incrementing integer.
+     * @return array - an array of errors
+     *
+     */
     public function validate_vehicleID()
     {
         $validationResult = [];
@@ -38,13 +44,18 @@ class Vehicle extends ORM\Entity
         return $validationResult;
     }
     public $vehicleID;
-    //this will keep track of vehicle make
-    //25 characters max, required field
+
+    /**
+     * This function will validate the vehicle make.
+     * It will check for an empty string or null
+     * it will also ensure the make is no longer than 25 characters long
+     * @return array - an array or errors
+     */
     public function validate_make()
     {
         $validationResult = [];
-        //check if make is empty
-        if(empty(trim($this->make)))
+        //check if make is empty string or null
+        if(empty(trim($this->make)) || $this->make === null)
         {
             //add the error message if empty
             $validationResult ['make'] = $this->getDisplayName('make') . ' cannot be empty or all spaces';
@@ -54,14 +65,21 @@ class Vehicle extends ORM\Entity
         //return any errors
         return $validationResult;
     }
-    public $make;
-    //this will keep track of the model
+    //this will keep track of vehicle make
     //25 characters max, required field
+    public $make;
+
+    /**
+     * This function will validate the vehicle model
+     * It will check for empty string value or null
+     * it will also ensure that the length of the string is no longer than 25 characters
+     * @return array - an array of errors
+     */
     public function validate_model()
     {
         $validationResult = [];
         //check if model is empty
-        if(empty(trim($this->model)))
+        if(empty(trim($this->model))|| $this->model === null)
         {
             //add the error message if empty
             $validationResult ['model'] = $this->getDisplayName('model') . ' cannot be empty or all spaces';
@@ -71,16 +89,24 @@ class Vehicle extends ORM\Entity
         //return any errors
         return $validationResult;
     }
+    //this will keep track of the model
+    //25 characters max, required field
     public $model;
-    //keeps track of vehicle type (example: Sedan, Compact, Truck)
-    //10 characters max.
-    //TODO:make sure only valid types are Sedan Compact Cross Over and Truck
+
+    /**
+     * This function will validate the vehicle type
+     * It will check for empty string or null
+     * It will validate that the make matches the list of valid types allowed
+     *  if not an error will be returned
+     * It will also ensure the type is no longer than 10 characters
+     * @return array - an array of errors
+     */
     public function validate_type()
     {
         $validationResult = [];
         $validTypes = ['Sedan', 'Compact', 'Cross Over', 'Truck'];
         //check if type is empty
-        if(empty(trim($this->type)))
+        if(empty(trim($this->type)) || $this->type === null)
         {
             //add the error message if type is empty
             $validationResult ['type'] = $this->getDisplayName('type') . ' cannot be empty or all spaces';
@@ -91,10 +117,19 @@ class Vehicle extends ORM\Entity
         //return any errors
         return $validationResult;
     }
+    //keeps track of vehicle type (example: Sedan, Compact, Truck)
+    //10 characters max.
     public $type;
-    //Keeps track of vehicle year
-    //is an int
-    //must be less than current year plus 2
+
+    /**
+     * This function will validate the vehicle year
+     * Null values are allowed
+     * Will check to make sure that the value for year turns into a valid date (if any character is entered besides an integer, vDate will equal false
+     *  meaning the year was invalid
+     * Also compares the year to the current year plus two years
+     *  The vehicle year must be less than the current year plus 2 years.
+     * @return array - an array of errors
+     */
     public function validate_year()
     {
         $validationResult = [];
@@ -102,42 +137,52 @@ class Vehicle extends ORM\Entity
         {
             return $validationResult;
         }
+        //https://www.w3schools.com/php/php_date.asp - referenced this web site to help me in creating and comparing date time objects in PHP
+        //strtotime takes in a string and turns the string into a date time
         $vDate = strtotime("January 1 " . $this->year);
+        //the upper bound is equal to the current year plus to years
+        //for the upperBoundDate - I used strtotime to take in the current time and the string of '+2 years' so that strtotime knows to create a
+        //date of the current time and add 2 years to it.
+        //turn the vehicle year into a date object with the year provided and have the month and day be January 1st of that year
         $upperBoundDate = strtotime("+2 Years", time());
 
-        //ensure that the year is an int and greater than 0
+        //when debugging I noticed that the datetime objects are turned to an int for comparing
+        //ensure that the year is not null and greater than 0
         if( $vDate === false || $this->year < 0)
         {
             $validationResult ['year'] = $this->getDisplayName('year') .  ' must be an integer greater than or equal to 0';
         }
-        //used https://www.w3schools.com/php/php_date.asp to understand the function
-        //mktime and strtotime
-        //mktime takes in an integer for hour, minute, second, month, day, and year
-        //1.since we only have the year, I set everything to null but the year
-        //2.next we need to compare the given year to the current year to ensure the vehicle year
-        //  is less than the current year plus 2 years (this is where strtostring comes handy
-        //3.strtostring takes in a string and and a date
-        //  it will use the string (in this case the string is '+2 years'
-        //  and add two years to the date passed in.
-        //4.Using those two date objects i can compare them and ensure the Vehicle year is valid
 
+        //check to make sure that the vehicle year is less than the upperBoundDate (current year plus 2 years)
         else if(!($vDate < $upperBoundDate)) //Used https://www.w3schools.com/php/php_date.asp to understand how to get the current date
-        {                                                                                                                                       //call date() and pass in the format you would like so I passed in 'Y' to get the current year
+        {
             $validationResult ['year'] = $this->getDisplayName('year') . ' must be less than the current year plus 2 years';
         }
 
         return $validationResult;
     }
+    //Keeps track of vehicle year
+    //is an int
+    //must be less than current year plus 2
     public $year;
 
 
+    /**
+     * Vehicle constructor. This will load all the column definitions for each variable in this object
+     * It will also set the display names for this object
+     */
     public function __construct()
     {
         //here the developer can set any protected variables
+        //vehicleID will be stored as an integer, will be the primary key and also autoincrement
         $this->addColumnDefinition("vehicleID", "INTEGER", "PRIMARY KEY AUTOINCREMENT"); //primary key
+        //make will be an nvarchar with a max length of 25 and must not be null
         $this->addColumnDefinition("make", "nvarchar(25)", "not null"); //required
+        //model must be an nvarchar with max length of 25 and must not be null
         $this->addColumnDefinition("model", "nvarchar(25)", "not null"); //required
+        //type must be an nvarchar with max length of 10 and not be null
         $this->addColumnDefinition("type", "nvarchar(10)", "not null"); //required
+        //year must be an integer
         $this->addColumnDefinition("year", "INTEGER", ""); //not specified as required
 
 
