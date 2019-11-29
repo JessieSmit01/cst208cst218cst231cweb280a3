@@ -24,7 +24,7 @@
 <!-- VUE SECTION-->
 <div id="managed_by_vue_js">
 <!--    The b-table component -->
-    <vehicle-table :vehicles="vehicles" :key="vehicleID"></vehicle-table>
+    <vehicle-table :vehicles="vehicles"></vehicle-table>
 
 
 
@@ -54,6 +54,8 @@
             getData: function () {
                 axios.get('vehicles-api.php', {params: {}})
                     .then(response => {
+                        console.log(response);
+                        this.vehicles = response.vehicles;
                         this.axiosResult = response;//ONLY FOR DEBUG
                     })
                     .catch(errors => {

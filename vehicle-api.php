@@ -8,7 +8,7 @@
  * the api for the vehicles-ui. Sends json and appropriate status codes
  *
  **************************************/
-require_once "..\..\lib\Vehicle.php"; //will need to use the vehicle class in the lib folder
+require_once "Vehicle.php"; //will need to use the vehicle class in the lib folder
 require_once "..\..\lib\ORM\Repository.php"; //will need to access the repository class in the lib/ORM folder
 
 //$_REQUEST contains all params from $_GET and $_POST - we can check if any params exist in $_REQUEST if not use php://input

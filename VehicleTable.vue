@@ -10,11 +10,13 @@
     <!--    //11.	Add an ‘actions’ column with an edit button that opens the VehicleInput modal with the form inputs filled with the corresponding vehicle data-->
     <div>
         <b-button @click="toggleBusy">Toggle Busy State</b-button>
-        <b-table responsive striped hover
-                 :items="vehicles"
+        <b-table responsive striped hover head-variant="dark" sticky-header="40%"
+                 primary-key="vehicleID"
+
                  :fields="fields"
                  :busy="isBusy"
         >
+<!--            :items="provider"-->
             <template v-slot:table-busy>
                 <div class="text-center text-danger my-2">
                     <b-spinner class="align-middle"></b-spinner>
@@ -24,7 +26,7 @@
 
             <!-- A virtual column -->
             <template v-slot:cell(actions)="data">
-                <b-button @click="edit(key)" class="btn btn-primary fas fa-edit" title="Edit"></b-button>
+                <b-button @click="edit()" class="btn btn-primary fas fa-edit" title="Edit"></b-button>
             </template>
         </b-table>
     </div>
@@ -78,10 +80,36 @@
             }
         },
         methods: {
+            provider(ctx) {
+                let promise = axios.get('vehicle-api.php');
+
+                return promise.then(data => {
+                    console.log(data);
+                    const items = data.vehicles;
+
+                    return(items)
+                }).catch(errors => {
+                    console.log(errors);
+                    return [];
+                })
+
+                // axios.get('vehicles-api.php', {params: {}})
+                //     .then(response => {
+                //         console.log(response);
+                //         // this.axiosResult = response;//ONLY FOR DEBUG
+                //     })
+                //     .catch(errors => {
+                //         console.log(errors);
+                //         this.axiosResult = errors;//ONLY FOR DEBUG
+                //     })
+                //     .finally()
+
+            },
             toggleBusy() {
                 this.isBusy = !this.isBusy;
             },
-            edit(vehicle) {
+            edit() {
+
                 console.log(vehicle + " edit was clicked");
             }
         }
