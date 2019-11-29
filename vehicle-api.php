@@ -8,7 +8,7 @@
  * the api for the vehicles-ui. Sends json and appropriate status codes
  *
  **************************************/
-require_once "Vehicle.php"; //will need to use the vehicle class in the lib folder
+require_once "..\..\lib\Vehicle.php"; //will need to use the vehicle class in the lib folder
 require_once "..\..\lib\ORM\Repository.php"; //will need to access the repository class in the lib/ORM folder
 
 //$_REQUEST contains all params from $_GET and $_POST - we can check if any params exist in $_REQUEST if not use php://input
@@ -53,6 +53,8 @@ switch($_SERVER['REQUEST_METHOD']){
  */
 function handleGET($repo, $searchString)
 {
+    $searchString = htmlentities($searchString); //sanitise the search string
+
     $vehicle = new Vehicle();
     //if search string is empty or null - just pass in the empty vehicle
     //if the search string contains a value then add the wilcard characters and set the value to all text
@@ -85,6 +87,11 @@ function handleGET($repo, $searchString)
  * @return mixed - returns the vehicle added if successful, last sql statement ran if error occurred, or the validation errors if a validation error occurred.
  */
 function handlePOST($vehicle, $repo){
+    //Sanitise the vehicle variable values
+    $vehicle->make = htmlentities($vehicle->make);
+    $vehicle->model = htmlentities($vehicle->model);
+    $vehicle->type = htmlentities($vehicle->type);
+    $vehicle->year = htmlentities($vehicle->year);
 
     //validate all vehicle attributes
     $result = $vehicle->validate();
@@ -119,6 +126,11 @@ function handlePOST($vehicle, $repo){
  */
 function handlePUT($vehicle, $repo)
 {
+    //Sanitise the vehicle variable values
+    $vehicle->make = htmlentities($vehicle->make);
+    $vehicle->model = htmlentities($vehicle->model);
+    $vehicle->type = htmlentities($vehicle->type);
+    $vehicle->year = htmlentities($vehicle->year);
 
     //validate the vehicle taken
     $result = $vehicle->validate();

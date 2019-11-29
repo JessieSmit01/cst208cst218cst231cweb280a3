@@ -47,25 +47,37 @@
     new Vue({
         el: '#managed_by_vue_js',
         data: {
-            vehicles: [ {'vehicleID':'12345', 'make':'Ford', 'model':'Mustang', 'type':'Sedan', 'year':1979}],
-            axiosResult: {}
+            vehicles: [ ], //{'vehicleID':'12345', 'make':'Ford', 'model':'Mustang', 'type':'Sedan', 'year':1979} - original data
+            axiosResult: {}, //debug purposes
+            searchString: '', //string to search by
+            sqlDebug: '',
         },
         methods: {
             getData: function () {
-                axios.get('vehicles-api.php', {params: {}})
+                axios.get('vehicle-api.php', {params: {searchfor:this.searchString}})
                     .then(response => {
-                        console.log(response);
-                        this.vehicles = response.vehicles;
+                        // console.log(response);
+                        this.vehicles = response.data;
                         this.axiosResult = response;//ONLY FOR DEBUG
                     })
                     .catch(errors => {
+                        let response = errors.response;
                         this.axiosResult = errors;//ONLY FOR DEBUG
+                        if(response.status == 404) //error code for nothing found
+                        {
+                            this.vehicles = []; //nothing found so set vehicles to empty array
+                        }
+                        else if(response.status == 418) //error for 'Im a Teapot" -means an sql error occurred
+                        {
+                            this.sqlDebug = response.data;
+                        }
                     })
                     .finally()
             }
         },
         components: {
-            'VehicleTable': httpVueLoader('./VehicleTable.vue')
+            'VehicleTable': httpVueLoader('./VehicleTable.vue'),
+            'VehicleInput' : httpVueLoader('./VehicleInput.vue')
         },
         mounted() {
             this.getData();

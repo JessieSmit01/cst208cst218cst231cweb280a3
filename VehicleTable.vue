@@ -12,9 +12,9 @@
         <b-button @click="toggleBusy">Toggle Busy State</b-button>
         <b-table responsive striped hover head-variant="dark" sticky-header="40%"
                  primary-key="vehicleID"
-
                  :fields="fields"
                  :busy="isBusy"
+                 :items="provider"
         >
 <!--            :items="provider"-->
             <template v-slot:table-busy>
@@ -71,38 +71,21 @@
                         variant: 'info'
                     }
                 ]
-                // items: [
-                //     { age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },
-                //     { age: 21, first_name: 'Larsen', last_name: 'Shaw' },
-                //     { age: 89, first_name: 'Geneva', last_name: 'Wilson' },
-                //     { age: 38, first_name: 'Jami', last_name: 'Carney' }
-                // ]
             }
         },
         methods: {
             provider(ctx) {
-                let promise = axios.get('vehicle-api.php');
+                let promise = axios.get('vehicle-api.php', {params: {searchfor:''}});
 
-                return promise.then(data => {
-                    console.log(data);
-                    const items = data.vehicles;
+                return promise.then(response => {
+                    console.log(response.data);
+                    const items = response.data;
 
                     return(items)
                 }).catch(errors => {
                     console.log(errors);
                     return [];
                 })
-
-                // axios.get('vehicles-api.php', {params: {}})
-                //     .then(response => {
-                //         console.log(response);
-                //         // this.axiosResult = response;//ONLY FOR DEBUG
-                //     })
-                //     .catch(errors => {
-                //         console.log(errors);
-                //         this.axiosResult = errors;//ONLY FOR DEBUG
-                //     })
-                //     .finally()
 
             },
             toggleBusy() {
