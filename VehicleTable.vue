@@ -11,12 +11,18 @@
     <div>
         <b-button @click="toggleBusy">Toggle Busy State</b-button>
         <b-table responsive striped hover head-variant="dark" sticky-header="40%"
+                 no-provider-sorting
                  primary-key="vehicleID"
                  :fields="fields"
                  :busy="isBusy"
                  :items="provider"
         >
-<!--            :items="provider"-->
+            <!-- A virtual column for the "actions"-->
+            <template v-slot:cell(actions)="data">
+                <b-button @click="edit(data.item)" class="btn btn-primary fas fa-edit" title="Edit"></b-button>
+            </template>
+
+<!--            a spinner!-->
             <template v-slot:table-busy>
                 <div class="text-center text-danger my-2">
                     <b-spinner class="align-middle"></b-spinner>
@@ -24,10 +30,7 @@
                 </div>
             </template>
 
-            <!-- A virtual column -->
-            <template v-slot:cell(actions)="data">
-                <b-button @click="edit()" class="btn btn-primary fas fa-edit" title="Edit"></b-button>
-            </template>
+
         </b-table>
     </div>
 </template>
@@ -35,11 +38,7 @@
 <script>
     module.exports = {
         name: "VehicleTable",
-        props: {
-            vehicles: { //detached from the text inputs, not to be edited directly
-                type: Array,
-                default: () => (null)
-            }
+        props: { //data passed in when creating the component
         },
         data() {
             return {
@@ -74,11 +73,10 @@
             }
         },
         methods: {
-            provider(ctx) {
+            provider() {
                 let promise = axios.get('vehicle-api.php', {params: {searchfor:''}});
 
                 return promise.then(response => {
-                    console.log(response.data);
                     const items = response.data;
 
                     return(items)
@@ -91,9 +89,8 @@
             toggleBusy() {
                 this.isBusy = !this.isBusy;
             },
-            edit() {
-
-                console.log(vehicle + " edit was clicked");
+            edit(vehicle) {
+                this.$emit('edit', vehicle);
             }
         }
 
