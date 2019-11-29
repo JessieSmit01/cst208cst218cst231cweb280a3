@@ -75,7 +75,7 @@
             }
         },
         components: {
-            'VehicleTable': httpVueLoader('./VehicleTable.vue')
+            'VehicleTable': httpVueLoader('./VehicleTable.vue'),
             'VehicleInput' : httpVueLoader('./VehicleInput.vue')
         },
         mounted() {
