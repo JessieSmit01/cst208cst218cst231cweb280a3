@@ -24,7 +24,7 @@
 
             <!-- A virtual column -->
             <template v-slot:cell(actions)="data">
-                <b-button @click="edit" class="btn btn-primary fas fa-edit" title="Edit"></b-button>
+                <b-button @click="edit(key)" class="btn btn-primary fas fa-edit" title="Edit"></b-button>
             </template>
         </b-table>
     </div>
@@ -43,9 +43,9 @@
             return {
                 isBusy: false,
                 fields: [
-                    'actions',
                     {
                         key: 'vehicleID',
+                        label: 'ID',
                         sortable: true
                     },
                     {
@@ -63,6 +63,10 @@
                     {
                         key: 'year',
                         sortable: true
+                    },
+                    {
+                        key: 'actions',
+                        variant: 'info'
                     }
                 ]
                 // items: [
@@ -77,8 +81,8 @@
             toggleBusy() {
                 this.isBusy = !this.isBusy;
             },
-            edit() {
-                console.log("edit was clicked");
+            edit(vehicle) {
+                console.log(vehicle + " edit was clicked");
             }
         }
 
