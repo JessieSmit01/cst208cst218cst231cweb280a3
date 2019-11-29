@@ -24,7 +24,7 @@
 <!-- VUE SECTION-->
 <div id="managed_by_vue_js">
 <!--    The b-table component -->
-    <vehicle-table :vehicles="vehicles" @edit="editVehicle"></vehicle-table>
+    <vehicle-table :vehicles="vehicles" @edit="editVehicle" @add="addVehicle"></vehicle-table>
 
 
 
@@ -77,6 +77,9 @@
             editVehicle: function(vehicle) {
                 //THIS IS WHERE YOU TAKE IT ON CARSON
                 console.log(vehicle);
+            },
+            addVehicle: function() {
+                console.log("adding a vehicle");
             }
         },
         components: {

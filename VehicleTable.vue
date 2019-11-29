@@ -10,12 +10,18 @@
     <!--    //11.	Add an ‘actions’ column with an edit button that opens the VehicleInput modal with the form inputs filled with the corresponding vehicle data-->
     <div>
         <b-button @click="toggleBusy">Toggle Busy State</b-button>
-        <b-table responsive striped hover head-variant="dark" sticky-header="40%"
-                 no-provider-sorting
-                 primary-key="vehicleID"
-                 :fields="fields"
-                 :busy="isBusy"
-                 :items="provider"
+        <button @click="add" class="fas fa-plus"></button>
+        <b-table
+                responsive
+                striped
+                hover
+                head-variant="dark"
+                sticky-header="40%"
+                no-provider-sorting
+                primary-key="vehicleID"
+                :fields="fields"
+                :busy="isBusy"
+                :items="provider"
         >
             <!-- A virtual column for the "actions"-->
             <template v-slot:cell(actions)="data">
@@ -67,6 +73,7 @@
                     },
                     {
                         key: 'actions',
+                        label: 'icon here',
                         variant: 'info'
                     }
                 ]
@@ -91,6 +98,9 @@
             },
             edit(vehicle) {
                 this.$emit('edit', vehicle);
+            },
+            add() {
+                this.$emit('add');
             }
         }
 
