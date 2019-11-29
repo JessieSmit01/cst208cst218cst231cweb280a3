@@ -23,10 +23,10 @@
         <label>Type:</label>
         <b-form-group :invalid-feedback="errors.type" :state="states.type">
             <b-form-radio-group>
-                <b-form-radio v-model="vehicle.type" name="vehicleType" value="sedan">Sedan</b-form-radio>
-                <b-form-radio v-model="vehicle.type" name="vehicleType" value="compact">Compact</b-form-radio>
-                <b-form-radio v-model="vehicle.type" name="vehicleType" value="cross over">Cross Over</b-form-radio>
-                <b-form-radio v-model="vehicle.type" name="vehicleType" value="truck">Truck</b-form-radio>
+                <b-form-radio v-model="vehicle.type" name="vehicleType" value="Sedan">Sedan</b-form-radio>
+                <b-form-radio v-model="vehicle.type" name="vehicleType" value="Compact">Compact</b-form-radio>
+                <b-form-radio v-model="vehicle.type" name="vehicleType" value="Cross Over">Cross Over</b-form-radio>
+                <b-form-radio v-model="vehicle.type" name="vehicleType" value="Truck">Truck</b-form-radio>
             </b-form-radio-group>
         </b-form-group>
 
