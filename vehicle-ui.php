@@ -24,7 +24,7 @@
 <!-- VUE SECTION-->
 <div id="managed_by_vue_js">
 <!--    The b-table component -->
-    <vehicle-table :vehicles="vehicles" :key="vehicleID"></vehicle-table>
+    <vehicle-table :vehicles="vehicles" @edit="editVehicle" @add="addVehicle"></vehicle-table>
 
 
 
@@ -56,6 +56,7 @@
             getData: function () {
                 axios.get('vehicle-api.php', {params: {searchfor:this.searchString}})
                     .then(response => {
+
                         this.vehicles = response.data;
                         this.axiosResult = response;//ONLY FOR DEBUG
                     })
@@ -72,6 +73,13 @@
                         }
                     })
                     .finally()
+            },
+            editVehicle: function(vehicle) {
+                //THIS IS WHERE YOU TAKE IT ON CARSON
+                console.log(vehicle);
+            },
+            addVehicle: function() {
+                console.log("adding a vehicle");
             }
         },
         components: {
