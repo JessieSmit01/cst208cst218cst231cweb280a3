@@ -10,11 +10,25 @@
     <!--    //11.	Add an ‘actions’ column with an edit button that opens the VehicleInput modal with the form inputs filled with the corresponding vehicle data-->
     <div>
         <b-button @click="toggleBusy">Toggle Busy State</b-button>
-        <b-table responsive striped hover
-                 :items="vehicles"
-                 :fields="fields"
-                 :busy="isBusy"
+        <button @click="add" class="fas fa-plus"></button>
+        <b-table
+                responsive
+                striped
+                hover
+                head-variant="dark"
+                sticky-header="40%"
+                no-provider-sorting
+                primary-key="vehicleID"
+                :fields="fields"
+                :busy="isBusy"
+                :items="provider"
         >
+            <!-- A virtual column for the "actions"-->
+            <template v-slot:cell(actions)="data">
+                <b-button @click="edit(data.item)" class="btn btn-primary fas fa-edit" title="Edit"></b-button>
+            </template>
+
+<!--            a spinner!-->
             <template v-slot:table-busy>
                 <div class="text-center text-danger my-2">
                     <b-spinner class="align-middle"></b-spinner>
@@ -22,10 +36,7 @@
                 </div>
             </template>
 
-            <!-- A virtual column -->
-            <template v-slot:cell(actions)="data">
-                <b-button @click="edit(key)" class="btn btn-primary fas fa-edit" title="Edit"></b-button>
-            </template>
+
         </b-table>
     </div>
 </template>
@@ -33,11 +44,7 @@
 <script>
     module.exports = {
         name: "VehicleTable",
-        props: {
-            vehicles: { //detached from the text inputs, not to be edited directly
-                type: Array,
-                default: () => (null)
-            }
+        props: { //data passed in when creating the component
         },
         data() {
             return {
@@ -66,24 +73,34 @@
                     },
                     {
                         key: 'actions',
+                        label: 'icon here',
                         variant: 'info'
                     }
                 ]
-                // items: [
-                //     { age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },
-                //     { age: 21, first_name: 'Larsen', last_name: 'Shaw' },
-                //     { age: 89, first_name: 'Geneva', last_name: 'Wilson' },
-                //     { age: 38, first_name: 'Jami', last_name: 'Carney' }
-                // ]
             }
         },
         methods: {
+            provider() {
+                let promise = axios.get('vehicle-api.php', {params: {searchfor:''}});
+
+                return promise.then(response => {
+                    const items = response.data;
+
+                    return(items)
+                }).catch(errors => {
+                    console.log(errors);
+                    return [];
+                })
+
+            },
             toggleBusy() {
                 this.isBusy = !this.isBusy;
             },
             edit(vehicle) {
-                console.log(vehicle + " edit was clicked");
-                this.$emit('edit',vehicle);
+                this.$emit('edit', vehicle);
+            },
+            add() {
+                this.$emit('add');
             }
         }
 
