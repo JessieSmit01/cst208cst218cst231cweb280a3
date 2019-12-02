@@ -56,7 +56,7 @@
             getData: function () {
                 axios.get('vehicle-api.php', {params: {searchfor:this.searchString}})
                     .then(response => {
-                        // console.log(response);
+
                         this.vehicles = response.data;
                         this.axiosResult = response;//ONLY FOR DEBUG
                     })

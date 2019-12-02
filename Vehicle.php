@@ -6,8 +6,6 @@
  * Project: CWEB280
  *
  *
- * Assign to: Jessie
- *
  **************************************/
 
 //require once will allow this file to use code from another file
@@ -146,7 +144,7 @@ class Vehicle extends ORM\Entity
         //for the upperBoundDate - I used strtotime to take in the current time and the string of '+2 years' so that strtotime knows to create a
         //date of the current time and add 2 years to it.
         //turn the vehicle year into a date object with the year provided and have the month and day be January 1st of that year
-        $upperBoundDate = strtotime("+2 Years", time());
+        $upperBoundDate = strtotime("January 1 +2 Years", time()); //set the upperBoundDate to be January 1st of the current year plus 2 years.
 
         //when debugging I noticed that the datetime objects are turned to an int for comparing
         //ensure that the year is not null and greater than 0
