@@ -9,20 +9,22 @@
     <!--    //10.	Allow for local sorting on all fields - ( use no-provider-sorting option)-->
     <!--    //11.	Add an ‘actions’ column with an edit button that opens the VehicleInput modal with the form inputs filled with the corresponding vehicle data-->
     <div>
-
+        <b-button @click="refresh">Refresh Table</b-button>
         <b-table
+                id="vehicleTable"
                 striped
                 hover
                 head-variant="dark"
                 sticky-header="40%"
                 no-provider-sorting
                 primary-key="vehicleID"
+                :tbody-transition-props="transProps"
                 :fields="fields"
                 :busy="isBusy"
                 :items="provider"
         >
             <!-- A custom formatted header cell for the actions column -->
-            <!-- https://bootstrap-vue.js.org/docs/components/table/#header-and-footer-custom-rendering-via-scoped-slots-->
+            <!-- https://bootstrap-vue.js.org/docs/components/table/#header-and-footer-custom-rendering-via-scoped-slots -->
             <template v-slot:head(actions)="data" >
                 <b-button
                         @click="add"
@@ -58,13 +60,17 @@
 <script>
     module.exports = {
         name: "VehicleTable",
-        props: { //data passed in when creating the component
-        },
         data() {
             return {
                 //https://bootstrap-vue.js.org/docs/components/table/#automated-table-busy-state
                 //do not actually need to set this anywhere when using a provider
                 isBusy: false, //is true when the data is loading.
+                transProps: {
+                    // Transition name
+                    //https://bootstrap-vue.js.org/docs/components/table/#table-body-transition-support
+                    //fancy transition property requires the name of the transition, a css style telling it what to do, and for the primary key to be set
+                    name: 'flip-list'
+                },
                 fields: [
                     {
                         key: 'vehicleID',
@@ -101,14 +107,15 @@
              * @returns {Promise<any> | Promise<T | Array>}
              */
             provider(ctx) {
-                //Did not need the isBusy! it handled itself
+                //The provider automatically handles the isBusy
+                //(ie: sets it true at the beginning of the method, and false at the end), so no need to directly code it
                 //we are busy until we get the data back
                 // this.isBusy = true;
 
-                //create a promise that is the axios get method to the api
+                //create a promise that is the axios get method to the api. No search currently implemented, so we are not sending in a search term
                 let promise = axios.get('vehicle-api.php', {params: {searchfor:''}});
 
-                //return the promise where the response is what returns from the PAI
+                //return the promise where the response is what returns from the API, or empty array on error
                 return promise.then(response => {
                     //on success, return the data from the response to be set to the items
                     return response.data;
@@ -117,10 +124,7 @@
                     //TODO: Probably do some error handling
                     console.log(errors);
                     return [];
-                }).finally(
-                    //success or error-- we are no longer busy
-                    // this.isBusy = false
-                );
+                });
 
             },
             /**
@@ -137,6 +141,10 @@
              */
             add() {
                 this.$emit('add');
+            },
+            refresh()
+            {
+                console.log("Refresh");
             }
         }
 
@@ -144,5 +152,8 @@
 </script>
 
 <style scoped>
+    .flip-list-move {
+        transition: transform .3s;
+    }
 
 </style>
