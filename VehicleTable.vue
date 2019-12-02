@@ -83,6 +83,7 @@
             },
             edit(vehicle) {
                 console.log(vehicle + " edit was clicked");
+                this.$emit('edit',vehicle);
             }
         }
 

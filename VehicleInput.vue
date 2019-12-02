@@ -1,6 +1,6 @@
 <template>
     <!-- title does not currently change whether editing or creating new vehicle -->
-    <b-modal title="Create Vehicle" v-model="modalShown" @shown="" hide-footer>
+    <b-modal title="Create Vehicle" v-model="modalShown" hide-footer>
         <!-- form input for the make of the vehicle -->
         <label>Make:</label>
         <b-form-group :invalid-feedback="errors.make" :state="states.make">
@@ -22,11 +22,11 @@
         <!-- form input for the type of the vehicle, with four radio buttons -->
         <label>Type:</label>
         <b-form-group :invalid-feedback="errors.type" :state="states.type">
-            <b-form-radio-group>
-                <b-form-radio v-model="vehicle.type" name="vehicleType" value="Sedan">Sedan</b-form-radio>
-                <b-form-radio v-model="vehicle.type" name="vehicleType" value="Compact">Compact</b-form-radio>
-                <b-form-radio v-model="vehicle.type" name="vehicleType" value="Cross Over">Cross Over</b-form-radio>
-                <b-form-radio v-model="vehicle.type" name="vehicleType" value="Truck">Truck</b-form-radio>
+            <b-form-radio-group v-model="vehicle.type">
+                <b-form-radio name="vehicleType" value="Sedan">Sedan</b-form-radio>
+                <b-form-radio name="vehicleType" value="Compact">Compact</b-form-radio>
+                <b-form-radio name="vehicleType" value="Cross Over">Cross Over</b-form-radio>
+                <b-form-radio name="vehicleType" value="Truck">Truck</b-form-radio>
             </b-form-radio-group>
         </b-form-group>
 
@@ -48,7 +48,7 @@
             modalShown: {
                 type: Boolean,
                 // default value of true, to show it
-                default: ()=>(true)
+                default: ()=>(false)
             },
             // determine whether or not it is in edit mode
             editMode:{

@@ -24,9 +24,10 @@
 <!-- VUE SECTION-->
 <div id="managed_by_vue_js">
 <!--    The b-table component -->
-    <vehicle-table :vehicles="vehicles" :key="vehicleID"></vehicle-table>
+    <vehicle-table :vehicles="vehicles" :key="vehicleID" @edit="editVehicle"></vehicle-table>
 
-
+<!-- the b-modal component -->
+    <vehicle-input :vehicle="vehicle" :modal-shown="showModalFromComponent"></vehicle-input>
 
 <!--    DEBUG SECTION... KEEP OR DELETE???-->
     <footer class="row bg-info mt-5">
@@ -41,18 +42,19 @@
     </footer>
 </div>
 
-
 <script>
 
     new Vue({
         el: '#managed_by_vue_js',
         data: {
-            vehicles: [ {'vehicleID':'12345', 'make':'Ford', 'model':'Mustang', 'type':'Sedan', 'year':1979}],
-            axiosResult: {}
+            vehicles: [{'vehicleID':'12345', 'make':'Ford', 'model':'Mustang', 'type':'Sedan', 'year':1979}],
+            axiosResult: {},
+            showModalFromComponent: false,
+            vehicle: {}
         },
         methods: {
             getData: function () {
-                axios.get('vehicles-api.php', {params: {}})
+                axios.get('vehicle-api.php', {params: {}})
                     .then(response => {
                         this.axiosResult = response;//ONLY FOR DEBUG
                     })
@@ -60,17 +62,21 @@
                         this.axiosResult = errors;//ONLY FOR DEBUG
                     })
                     .finally()
+            },
+            editVehicle: function(vehicle) {
+                this.showModalFromComponent = true;
+                this.vehicle = {make: "Chevrolet", model: "Cruze", year: 2015, type: "Compact"};
             }
         },
         components: {
-            'VehicleTable': httpVueLoader('./VehicleTable.vue')
+            'VehicleTable': httpVueLoader('./VehicleTable.vue'),
+            'VehicleInput': httpVueLoader('./VehicleInput.vue')
         },
         mounted() {
             this.getData();
         }
     });
 </script>
-
 </body>
 </html>
 
