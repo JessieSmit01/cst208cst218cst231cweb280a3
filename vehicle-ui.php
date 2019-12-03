@@ -24,10 +24,20 @@
 <!-- VUE SECTION-->
 <div id="managed_by_vue_js">
 <!--    The b-table component -->
-    <vehicle-table :vehicles="vehicles" @edit="editVehicle" @add="sendVehicle"></vehicle-table>
+    <vehicle-table
+            :vehicles="vehicles"
+            @edit="editVehicle"
+            @add="addVehicle"
+    ></vehicle-table>
 
 <!-- the b-modal component -->
-    <vehicle-input :vehicle="vehicle" :modal-shown="showModalFromComponent" @save="sendVehicle"></vehicle-input>
+    <vehicle-input
+            :key="vehicle.vehicleID"
+            :vehicle="vehicle"
+            :modal-shown="showModalFromComponent"
+            @save="sendVehicle"
+            @cancel="vehicle = {}"
+    ></vehicle-input>
 
 <!--    DEBUG SECTION... KEEP OR DELETE???-->
     <footer class="row bg-info mt-5">
@@ -47,6 +57,7 @@
     new Vue({
         el: '#managed_by_vue_js',
         data: {
+            vehicles: [],
             axiosResult: {}, //debug purposes
             searchString: '', //string to search by
             sqlDebug: '',
@@ -55,7 +66,7 @@
         },
         methods: {
             getData: function () {
-                axios.get('vehicle-api.php', {params: {searchfor:this.searchString}})
+                axios.get('vehicle-api.php', {params: {searchfor: this.searchString}})
                     .then(response => {
 
                         this.vehicles = response.data;
@@ -75,29 +86,46 @@
                     })
                     .finally()
             },
+            /**
+             * open the modal to create a new vehicle
+             * no need to send in an object, use the modal's default blank object
+             */
+            addVehicle: function() {
+                this.showModalFromComponent = true; //show the modal
+            },
+            /**
+             * open the modal to edit the vehicle
+             * @param vehicle: the vehicle to edit
+             */
             editVehicle: function(vehicle) {
                 // this is called from VehicleTable.vue
-                this.showModalFromComponent = true;
-                this.vehicle = vehicle;
-                // this.vehicle = {make: vehicle.make, model: vehicle.model, type: vehicle.type, year: vehicle.year};
+                this.showModalFromComponent = true; //show the modal
+                this.vehicle = Object.assign({}, vehicle); //create a new object from what we received
             },
+            /**
+             * send the vehicle object to the database
+             * @param vehicle: vehicle to send
+             * @param errorMessages: do we need this?
+             * @param status: or this?
+             */
             sendVehicle: function(vehicle, errorMessages, status) {
-                console.log("Send Vehicle:" + vehicle.make);
                 axios({
-                    method: vehicle.vehicleID ? "put" : "post", // determine which method by whether or not studentID is set
+                    method: vehicle.vehicleID ? "put" : "post", // determine which method by whether or not vehicleID is set
                     url: "vehicle-api.php",
                     data: vehicle
                 }).then(response => {
                     this.axiosResult = response;
-                    status.code = 1; // let the component know that the student was successfully added to the database
+                    status.code = 1; // let the component know that the vehicle was successfully added to the database
                     if(response.status == 201) // created and added to database
                     {
-                        this.vehicles.push(response.data); // add new student to students array
+                        this.vehicles.push(response.data); // add new vehicle to vehicles array
                     }
-                    if(response.status == 200) // student updated in database
+                    if(response.status == 200) // vehicle updated in database
                     {
+                        //update the edited vehicle
+                        this.vehicles[this.vehicles.findIndex(v => v.vehicleID === vehicle.vehicleID)] = response.data;
                         // exit edit mode
-                        this.editID = 0;
+                        this.editID = 0; //TODO: We don't actually have an editID. Something else needs to be done
                     }
                 }).catch(errors => {
                     let response = errors.response;
