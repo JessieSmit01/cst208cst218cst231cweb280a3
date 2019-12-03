@@ -42,7 +42,13 @@
             vehicle: {
                 type: Object,
                 // default values for the vehicle object
-                default: ()=>({vehicleID:null,make:"",model:"",type:"",year:0})
+                default: ()=>({
+                    vehicleID: null,
+                    make: "",
+                    model: "",
+                    type: "",
+                    year: 0
+                })
             },
             // determine whether the model is shown or not, may not be necessary
             modalShown: {
@@ -72,6 +78,8 @@
                 // status code of -1 means we are waiting to hear back from the server
                 this.status.code = -1;
                 // newVehicle is connected to the text inputs, so we need to send that object to save new values to the database
+                console.log(this.newVehicle); //vehicle works, but this.newVehicle is buggy
+                console.log(this.data);
                 this.$emit('save', this.newVehicle, this.errors, this.status);
             }
         },

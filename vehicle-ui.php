@@ -27,7 +27,7 @@
     <vehicle-table :vehicles="vehicles" @edit="editVehicle" @add="sendVehicle"></vehicle-table>
 
 <!-- the b-modal component -->
-    <vehicle-input :vehicle="vehicle" :modal-shown="showModalFromComponent" :save="sendVehicle"></vehicle-input>
+    <vehicle-input :vehicle="vehicle" :modal-shown="showModalFromComponent" @save="sendVehicle"></vehicle-input>
 
 <!--    DEBUG SECTION... KEEP OR DELETE???-->
     <footer class="row bg-info mt-5">
@@ -47,7 +47,6 @@
     new Vue({
         el: '#managed_by_vue_js',
         data: {
-            vehicles: [{'vehicleID':'12345', 'make':'Ford', 'model':'Mustang', 'type':'Sedan', 'year':1979}],
             axiosResult: {}, //debug purposes
             searchString: '', //string to search by
             sqlDebug: '',
@@ -79,10 +78,11 @@
             editVehicle: function(vehicle) {
                 // this is called from VehicleTable.vue
                 this.showModalFromComponent = true;
-                this.vehicle = {make: vehicle.make, model: vehicle.model, type: vehicle.type, year: vehicle.year};
+                this.vehicle = vehicle;
+                // this.vehicle = {make: vehicle.make, model: vehicle.model, type: vehicle.type, year: vehicle.year};
             },
             sendVehicle: function(vehicle, errorMessages, status) {
-                console.log(vehicle);
+                console.log("Send Vehicle:" + vehicle.make);
                 axios({
                     method: vehicle.vehicleID ? "put" : "post", // determine which method by whether or not studentID is set
                     url: "vehicle-api.php",
