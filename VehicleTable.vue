@@ -39,7 +39,7 @@
 
 
 <!--        TODO: this button is not going to stay here. TESTING PURPOSES ONLY -->
-        <b-button @click="refresh">Refresh Table</b-button>
+<!--        <b-button @click="refresh">Refresh Table</b-button>-->
         <!-- TABLE PROPERTIES: all from https://bootstrap-vue.js.org/docs/components/table
             ref: so the refresh method knows what to refer to,
             striped: cosmetic, makes it look nice, hover: gives it a little styling change on hover
@@ -122,7 +122,13 @@
             refreshState: {
                 handler: function (newValue, oldValue) {
                     if (newValue === true) {
-                        this.refresh();
+                        console.log("I should refresh");
+                        /**
+                         * forces a refresh of the table data
+                         * looks at the refs, which we have set tha table as "table" so it refreshes that item
+                         * https://bootstrap-vue.js.org/docs/components/table/#force-refreshing-of-table-data
+                         */
+                        this.$refs.table.refresh();
                         this.refreshState = false;
                     }
                 }
@@ -208,16 +214,6 @@
             add() {
                 this.$emit('add');
             },
-
-            /**
-             * forces a refresh of the table data
-             * looks at the refs, which we have set tha table as "table" so it refreshes that item
-             * https://bootstrap-vue.js.org/docs/components/table/#force-refreshing-of-table-data
-             */
-            refresh()
-            {
-                this.$refs.table.refresh();
-            }
         }
 
     }

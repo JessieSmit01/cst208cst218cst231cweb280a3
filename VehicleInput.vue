@@ -23,10 +23,11 @@
         <label>Type:</label>
         <b-form-group :invalid-feedback="errors.type" :state="states.type">
             <b-form-radio-group v-model="vehicle.type">
-                <b-form-radio name="vehicleType" value="Sedan">Sedan</b-form-radio>
-                <b-form-radio name="vehicleType" value="Compact">Compact</b-form-radio>
-                <b-form-radio name="vehicleType" value="Cross Over">Cross Over</b-form-radio>
-                <b-form-radio name="vehicleType" value="Truck">Truck</b-form-radio>
+                <b-form-radio v-for="type in vehicleTypes" v-bind:value="type" name="vehicleType">{{type}}</b-form-radio>
+<!--                <b-form-radio name="vehicleType" value="Sedan">Sedan</b-form-radio>-->
+<!--                <b-form-radio name="vehicleType" value="Compact">Compact</b-form-radio>-->
+<!--                <b-form-radio name="vehicleType" value="Cross Over">Cross Over</b-form-radio>-->
+<!--                <b-form-radio name="vehicleType" value="Truck">Truck</b-form-radio>-->
             </b-form-radio-group>
         </b-form-group>
 
@@ -64,7 +65,8 @@
                 // newVehicle: Object.assign({}, this.vehicle),
                 errors: {},
                 // status code of 0 means nothing to update
-                status: {code:0}
+                status: {code:0},
+                vehicleTypes: ['Sedan', 'Compact', 'Cross Over', 'Truck']
             }
         },
         methods: {

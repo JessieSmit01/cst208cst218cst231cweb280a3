@@ -23,7 +23,6 @@
 
 <!-- VUE SECTION-->
 <div id="managed_by_vue_js">
-    <b-button @click="refreshData">Refresh</b-button>
 <!--    The b-table component -->
     <vehicle-table
             :refresh-state="refresh"
@@ -67,16 +66,14 @@
             refresh: false
         },
         methods: {
-            refreshData: function() {
-                this.refresh = true;
-            },
             /**
              * open the modal to create a new vehicle
              * no need to send in an object, use the modal's default blank object
              */
             addVehicle: function() {
-                this.showModalFromComponent = true; //show the modal
                 this.vehicle = {};
+                this.showModalFromComponent = true; //show the modal
+
             },
             /**
              * open the modal to edit the vehicle
@@ -84,8 +81,9 @@
              */
             editVehicle: function(vehicle) {
                 // this is called from VehicleTable.vue
-                this.showModalFromComponent = true; //show the modal
                 this.vehicle = Object.assign({}, vehicle); //create a new object from what we received
+                this.showModalFromComponent = true; //show the modal
+
             },
             /**
              * send the vehicle object to the database
@@ -115,7 +113,7 @@
                     //
                     // }
                     this.showModalFromComponent = false;
-                    this.refreshData();
+                    this.refreshState = true;
 
                 }).catch(errors => {
                     let response = errors.response;
