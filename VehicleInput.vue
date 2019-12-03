@@ -36,9 +36,9 @@
 </template>
 
 <script>
-    module.exports= {
+    module.exports = {
         props: {
-            // detached from the text inputs, not to be edited directly
+            // the vehicle we are editing
             vehicle: {
                 type: Object,
                 // default values for the vehicle object
@@ -55,18 +55,13 @@
                 type: Boolean,
                 // default value of true, to show it
                 default: ()=>(false)
-            },
-            // determine whether or not it is in edit mode
-            editMode:{
-                type: Boolean,
-                // default value of false to not be in edit mode
-                default:()=>(false)
             }
         },
         data: function() {
             return {
                 // copy data from the passed in student to the newVehicle (temporary) object
-                newVehicle: Object.assign({}, this.vehicle),
+                //TODO: See if we can get the "newVehicle functioning properly, because it's definitely better practice
+                // newVehicle: Object.assign({}, this.vehicle),
                 errors: {},
                 // status code of 0 means nothing to update
                 status: {code:0}
@@ -97,19 +92,6 @@
                     model: this.errors.model ? false : null,
                     year: this.errors.year ? false : null,
                     type: this.errors.type ? false : null
-                }
-            }
-        },
-        watch: {
-            editMode: function(newValue, oldValue)
-            {
-                // entering edit mode
-                if(newValue && this.status.code === 0)
-                {
-                    // reset errors
-                    this.errors = {};
-                    // again, copy the values from the original vehicle to the newVehicle (textboxes)
-                    // Object.assign(this.newVehicle, this.vehicle); <-- don't think we need this because the object sent in is already copied
                 }
             }
         }

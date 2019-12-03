@@ -23,9 +23,10 @@
 
 <!-- VUE SECTION-->
 <div id="managed_by_vue_js">
+    <b-button @click="refreshData">Refresh</b-button>
 <!--    The b-table component -->
     <vehicle-table
-            :vehicles="vehicles"
+            :refresh-state="refresh"
             @edit="editVehicle"
             @add="addVehicle"
     ></vehicle-table>
@@ -36,7 +37,7 @@
             :vehicle="vehicle"
             :modal-shown="showModalFromComponent"
             @save="sendVehicle"
-            @cancel="vehicle = {}"
+            @cancel="vehicle = {}; showModalFromComponent=false"
     ></vehicle-input>
 
 <!--    DEBUG SECTION... KEEP OR DELETE???-->
@@ -62,29 +63,12 @@
             searchString: '', //string to search by
             sqlDebug: '',
             showModalFromComponent: false,
-            vehicle: {}
+            vehicle: {},
+            refresh: false
         },
         methods: {
-            getData: function () {
-                axios.get('vehicle-api.php', {params: {searchfor: this.searchString}})
-                    .then(response => {
-
-                        this.vehicles = response.data;
-                        this.axiosResult = response;//ONLY FOR DEBUG
-                    })
-                    .catch(errors => {
-                        let response = errors.response;
-                        this.axiosResult = errors;//ONLY FOR DEBUG
-                        if(response.status == 404) //error code for nothing found
-                        {
-                            this.vehicles = []; //nothing found so set vehicles to empty array
-                        }
-                        else if(response.status == 418) //error for 'Im a Teapot" -means an sql error occurred
-                        {
-                            this.sqlDebug = response.data;
-                        }
-                    })
-                    .finally()
+            refreshData: function() {
+                this.refresh = true;
             },
             /**
              * open the modal to create a new vehicle
@@ -92,6 +76,7 @@
              */
             addVehicle: function() {
                 this.showModalFromComponent = true; //show the modal
+                this.vehicle = {};
             },
             /**
              * open the modal to edit the vehicle
@@ -116,17 +101,22 @@
                 }).then(response => {
                     this.axiosResult = response;
                     status.code = 1; // let the component know that the vehicle was successfully added to the database
-                    if(response.status == 201) // created and added to database
-                    {
-                        this.vehicles.push(response.data); // add new vehicle to vehicles array
-                    }
-                    if(response.status == 200) // vehicle updated in database
-                    {
-                        //update the edited vehicle
-                        this.vehicles[this.vehicles.findIndex(v => v.vehicleID === vehicle.vehicleID)] = response.data;
-                        // exit edit mode
-                        this.editID = 0; //TODO: We don't actually have an editID. Something else needs to be done
-                    }
+                    // if(response.status == 201) // created and added to database
+                    // {
+                    //     this.vehicles.push(response.data); // add new vehicle to vehicles array
+                    //
+                    // }
+                    // if(response.status == 200) // vehicle updated in database
+                    // {
+                    //     //update the edited vehicle
+                    //     this.vehicles[this.vehicles.findIndex(v => v.vehicleID === vehicle.vehicleID)] = response.data;
+                    //     this.showModalFromComponent = false;
+                    //     //we have to call the refresh method from outside of the table
+                    //
+                    // }
+                    this.showModalFromComponent = false;
+                    this.refreshData();
+
                 }).catch(errors => {
                     let response = errors.response;
                     this.axiosResult = response;
@@ -150,7 +140,6 @@
             'VehicleInput' : httpVueLoader('./VehicleInput.vue')
         },
         mounted() {
-            this.getData();
         }
     });
 </script>

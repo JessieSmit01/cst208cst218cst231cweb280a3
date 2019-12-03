@@ -111,6 +111,23 @@
 
     module.exports = {
         name: "VehicleTable", //how to refer to this component
+        props: {
+            refreshState: {
+                type: Boolean,
+                // default value of true, to not refresh the data
+                default: ()=>(false)
+            }
+        },
+        watch: {
+            refreshState: {
+                handler: function (newValue, oldValue) {
+                    if (newValue === true) {
+                        this.refresh();
+                        this.refreshState = false;
+                    }
+                }
+            }
+        },
         data() { //all of the data belonging to the table
             return {
                 //https://bootstrap-vue.js.org/docs/components/table/#automated-table-busy-state
