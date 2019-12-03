@@ -1,6 +1,6 @@
 <template>
     <!-- title does not currently change whether editing or creating new vehicle -->
-    <b-modal title="Create Vehicle" v-model="modalShown" @shown="" hide-footer>
+    <b-modal title="Create Vehicle" v-model="modalShown" hide-footer>
         <!-- form input for the make of the vehicle -->
         <label>Make:</label>
         <b-form-group :invalid-feedback="errors.make" :state="states.make">
@@ -22,11 +22,11 @@
         <!-- form input for the type of the vehicle, with four radio buttons -->
         <label>Type:</label>
         <b-form-group :invalid-feedback="errors.type" :state="states.type">
-            <b-form-radio-group>
-                <b-form-radio v-model="vehicle.type" name="vehicleType" value="Sedan">Sedan</b-form-radio>
-                <b-form-radio v-model="vehicle.type" name="vehicleType" value="Compact">Compact</b-form-radio>
-                <b-form-radio v-model="vehicle.type" name="vehicleType" value="Cross Over">Cross Over</b-form-radio>
-                <b-form-radio v-model="vehicle.type" name="vehicleType" value="Truck">Truck</b-form-radio>
+            <b-form-radio-group v-model="vehicle.type">
+                <b-form-radio name="vehicleType" value="Sedan">Sedan</b-form-radio>
+                <b-form-radio name="vehicleType" value="Compact">Compact</b-form-radio>
+                <b-form-radio name="vehicleType" value="Cross Over">Cross Over</b-form-radio>
+                <b-form-radio name="vehicleType" value="Truck">Truck</b-form-radio>
             </b-form-radio-group>
         </b-form-group>
 
@@ -42,13 +42,19 @@
             vehicle: {
                 type: Object,
                 // default values for the vehicle object
-                default: ()=>({vehicleID:null,make:"",model:"",type:"",year:0})
+                default: ()=>({
+                    vehicleID: null,
+                    make: "",
+                    model: "",
+                    type: "",
+                    year: 0
+                })
             },
             // determine whether the model is shown or not, may not be necessary
             modalShown: {
                 type: Boolean,
                 // default value of true, to show it
-                default: ()=>(true)
+                default: ()=>(false)
             },
             // determine whether or not it is in edit mode
             editMode:{
@@ -68,11 +74,17 @@
         },
         methods: {
             saveVehicle: function() {
-                this.errors = {vehicleID:null,make:null,model:null,type:null,year:null};
+                this.errors = {
+                    vehicleID: null,
+                    make: null,
+                    model: null,
+                    type: null,
+                    year: null
+                };
                 // status code of -1 means we are waiting to hear back from the server
                 this.status.code = -1;
                 // newVehicle is connected to the text inputs, so we need to send that object to save new values to the database
-                this.$emit('save', this.newVehicle, this.errors, this.status);
+                this.$emit('save', this.vehicle, this.errors, this.status);
             }
         },
         computed: {
@@ -96,8 +108,8 @@
                 {
                     // reset errors
                     this.errors = {};
-                    // again, copy the values from the original student to the newStudent (textboxes)
-                    Object.assign(this.newStudent, this.student);
+                    // again, copy the values from the original vehicle to the newVehicle (textboxes)
+                    // Object.assign(this.newVehicle, this.vehicle); <-- don't think we need this because the object sent in is already copied
                 }
             }
         }

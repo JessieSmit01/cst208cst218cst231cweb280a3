@@ -36,7 +36,7 @@ switch($_SERVER['REQUEST_METHOD']){
         //parse the requestData into a new Vehicle object
         $vehicle = (new Vehicle())->parseArray($requestData);
         //call the method to handle the put request and assign the returned data to resultToJSONEncode
-        $resultToJSONEncode = handlePUT($student, $repo);
+        $resultToJSONEncode = handlePUT($vehicle, $repo);
         break;
     default: //default case if the request method does not match any of the above
         $resultToJSONEncode = 'METHOD NOT SUPPORTED';
@@ -148,7 +148,7 @@ function handlePUT($vehicle, $repo)
     }
     else{ //the vehicle was successfully updated within the database
         //header("http/1.1 200 ok"); - default status code from most websites.
-        $result = $vehicle; //to send back the edited student as success indicator
+        $result = $vehicle; //to send back the edited vehicle as success indicator
     }
     //return the result
     return $result;
