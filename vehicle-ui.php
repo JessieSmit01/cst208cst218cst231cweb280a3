@@ -24,9 +24,10 @@
 <!-- VUE SECTION-->
 <div id="managed_by_vue_js">
 <!--    The b-table component -->
-    <vehicle-table :vehicles="vehicles" @edit="editVehicle" @add="addVehicle"></vehicle-table>
+    <vehicle-table :vehicles="vehicles" @edit="editVehicle" @add="sendVehicle"></vehicle-table>
 
-
+<!-- the b-modal component -->
+    <vehicle-input :vehicle="vehicle" :modal-shown="showModalFromComponent" :save="sendVehicle"></vehicle-input>
 
 <!--    DEBUG SECTION... KEEP OR DELETE???-->
     <footer class="row bg-info mt-5">
@@ -41,16 +42,17 @@
     </footer>
 </div>
 
-
 <script>
 
     new Vue({
         el: '#managed_by_vue_js',
         data: {
-            vehicles: [ ], //{'vehicleID':'12345', 'make':'Ford', 'model':'Mustang', 'type':'Sedan', 'year':1979} - original data
+            vehicles: [{'vehicleID':'12345', 'make':'Ford', 'model':'Mustang', 'type':'Sedan', 'year':1979}],
             axiosResult: {}, //debug purposes
             searchString: '', //string to search by
             sqlDebug: '',
+            showModalFromComponent: false,
+            vehicle: {}
         },
         methods: {
             getData: function () {
@@ -75,11 +77,44 @@
                     .finally()
             },
             editVehicle: function(vehicle) {
-                //THIS IS WHERE YOU TAKE IT ON CARSON
-                console.log(vehicle);
+                // this is called from VehicleTable.vue
+                this.showModalFromComponent = true;
+                this.vehicle = {make: vehicle.make, model: vehicle.model, type: vehicle.type, year: vehicle.year};
             },
-            addVehicle: function() {
-                console.log("adding a vehicle");
+            sendVehicle: function(vehicle, errorMessages, status) {
+                console.log(vehicle);
+                axios({
+                    method: vehicle.vehicleID ? "put" : "post", // determine which method by whether or not studentID is set
+                    url: "vehicle-api.php",
+                    data: vehicle
+                }).then(response => {
+                    this.axiosResult = response;
+                    status.code = 1; // let the component know that the student was successfully added to the database
+                    if(response.status == 201) // created and added to database
+                    {
+                        this.vehicles.push(response.data); // add new student to students array
+                    }
+                    if(response.status == 200) // student updated in database
+                    {
+                        // exit edit mode
+                        this.editID = 0;
+                    }
+                }).catch(errors => {
+                    let response = errors.response;
+                    this.axiosResult = response;
+                    status.code = 0; // let the component know that it did not save to the database
+                    if(response.status == 422) // validation error
+                    {
+                        Object.assign(errorMessages, response.data); // copy errorMessages to the errors object inside the component
+                    }
+                    else
+                    {
+                        if(response.status == 418) // database error - expect debug sql text to be returned
+                        {
+                            this.sqlDebug = response.data;
+                        }
+                    }
+                });
             }
         },
         components: {
@@ -91,7 +126,6 @@
         }
     });
 </script>
-
 </body>
 </html>
 
