@@ -35,6 +35,7 @@
             :key="vehicle.vehicleID"
             :vehicle="vehicle"
             :modal-shown="showModalFromComponent"
+
             @save="sendVehicle"
             @cancel="vehicle = {}"
     ></vehicle-input>
@@ -62,7 +63,8 @@
             searchString: '', //string to search by
             sqlDebug: '',
             showModalFromComponent: false,
-            vehicle: {}
+            vehicle: {},
+
         },
         methods: {
             getData: function () {
@@ -124,6 +126,7 @@
                     {
                         //update the edited vehicle
                         this.vehicles[this.vehicles.findIndex(v => v.vehicleID === vehicle.vehicleID)] = response.data;
+                        this.showModalFromComponent = false;
                         // exit edit mode
                         this.editID = 0; //TODO: We don't actually have an editID. Something else needs to be done
                     }

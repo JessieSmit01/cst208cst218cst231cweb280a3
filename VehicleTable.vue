@@ -71,7 +71,7 @@
             <!-- https://bootstrap-vue.js.org/docs/components/table/#header-and-footer-custom-rendering-via-scoped-slots -->
             <template v-slot:head(actions)="data" >
                 <b-button
-                        @click="add"
+                        @click="edit({})"
                         class="fas fa-plus"
                         title="Add"
                         variant="success"
@@ -185,12 +185,12 @@
                 this.$emit('edit', vehicle);
             },
 
-            /**
-             * event called when the add button is clicked. It just emits an add event.
-             */
-            add() {
-                this.$emit('add');
-            },
+            // /**
+            //  * event called when the add button is clicked. It just emits an add event.
+            //  */
+            // add() {
+            //     this.$emit('add', {});
+            // },
 
             /**
              * forces a refresh of the table data
