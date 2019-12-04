@@ -1,6 +1,11 @@
 <template>
     <!-- title does not currently change whether editing or creating new vehicle -->
-    <b-modal title="Create Vehicle" v-model="modalShown" hide-footer>
+    <b-modal
+            title="Create Vehicle"
+            hide-footer
+            ref="input-modal"
+            id="inputModal"
+    >
         <!-- form input for the make of the vehicle -->
         <label>Make:</label>
         <b-form-group :invalid-feedback="errors.make" :state="states.make">
@@ -51,12 +56,6 @@
                     year: 0
                 })
             },
-            // determine whether the model is shown or not, may not be necessary
-            modalShown: {
-                type: Boolean,
-                // default value of true, to show it
-                default: ()=>(false)
-            }
         },
         data: function() {
             return {
@@ -70,6 +69,12 @@
             }
         },
         methods: {
+            showModal: function() {
+              this.$refs['input-modal'].show();
+            },
+            hideModal: function() {
+                this.$refs['input-modal'].hide();
+            },
             saveVehicle: function() {
                 this.errors = {
                     vehicleID: null,
