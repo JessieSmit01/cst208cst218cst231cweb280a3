@@ -84,15 +84,15 @@
              * @param errorMessages: do we need this?
              * @param status: or this?
              */
-            sendVehicle: function(vehicle, errorMessages, status) {
+             sendVehicle: function(vehicle, errorMessages, status) {
                 axios({
                     method: vehicle.vehicleID ? "put" : "post", // determine which method by whether or not vehicleID is set
                     url: "vehicle-api.php", //send to the API
                     data: vehicle //give it the vehicle object
-                }).then(response => { //on success,
+                }).then(response  => { //on success,
                     this.axiosResult = response; //show the axios result in the footer
                     status.code = 1; // let the component know that the vehicle was successfully added to the database
-                    this.$root.$emit('bv::refresh::table', 'vehicleTable'); //refresh the table: https://bootstrap-vue.js.org/docs/components/table/#force-refreshing-of-table-data
+                    this.$root.$emit('bv::refresh::table', 'table'); //refresh the table: https://bootstrap-vue.js.org/docs/components/table/#force-refreshing-of-table-data
                     this.$bvModal.hide('inputModal'); //and hide the modal: https://bootstrap-vue.js.org/docs/components/modal#using-thisbvmodalshow-and-thisbvmodalhide-instance-methods
 
                 }).catch(errors => { //and if there are any errors,
