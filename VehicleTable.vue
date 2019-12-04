@@ -37,19 +37,18 @@
             </b-form-group>
         </b-col>
         <!-- TABLE PROPERTIES: all from https://bootstrap-vue.js.org/docs/components/table
-            ref: so the refresh method knows what to refer to,
+            id: so the refresh method knows what to refer to,
             striped: cosmetic, makes it look nice, hover: gives it a little styling change on hover
             head-variant: looks nice, contrast!
             no-provider-sorting: enables local sorting
             primary-key: tell it the primary key so it can optimize rendering (else it uses the row index number that changes when sorting
             transition-props: tell it which bootstrap transition to use
             fields: which columns to show
-            isBusy: link to boolean indicating if the data ia still loading
+            filter: a search string to filter on
             items: link to the provider to tell it to get the data from there
          -->
         <b-table
-                id="table"
-                ref="table"
+                id="vehicleTable"
                 striped
                 hover
                 head-variant="dark"
@@ -67,7 +66,7 @@
             <!-- https://bootstrap-vue.js.org/docs/components/table/#header-and-footer-custom-rendering-via-scoped-slots -->
             <template v-slot:head(actions)="data" >
                 <b-button
-                        @click="edit({})"
+                        @click="add()"
                         class="fas fa-plus"
                         title="Add"
                         variant="success"
@@ -180,20 +179,15 @@
                 //it has to be asynchronous because the two events firing simultaneously was blocking the modal, so have to wait for it
                 this.$bvModal.show('inputModal');
             },
-
-
             /**
              * event called when the add button is clicked. It just emits an add event.
              */
             async add() {
-                //the "add" functions fine without being asynchronous, but it's possible that an edge case would break it
+                //basically the same as edit except that we're not sending back a vehicle object
                 await this.$emit('add'); //emit the add event
                 this.$bvModal.show('inputModal'); //then show the vehicle
-
             }
-
         }
-
     }
 </script>
 
