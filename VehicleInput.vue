@@ -21,18 +21,15 @@
         <!-- form input for the year of the vehicle -->
         <label>Year:</label>
         <b-form-group :invalid-feedback="errors.year" :state="states.year">
-            <b-form-input type="number" v-model="vehicle.year" :state="states.year" trim @keyDown="errors.year=null"></b-form-input>
+            <b-form-input type="number" min=1896 v-model="vehicle.year" :state="states.year" trim @keyDown="errors.year=null"></b-form-input>
         </b-form-group>
 
         <!-- form input for the type of the vehicle, with four radio buttons -->
         <label>Type:</label>
         <b-form-group :invalid-feedback="errors.type" :state="states.type">
             <b-form-radio-group v-model="vehicle.type">
-                <b-form-radio v-for="type in vehicleTypes" v-bind:value="type" name="vehicleType">{{type}}</b-form-radio>
-<!--                <b-form-radio name="vehicleType" value="Sedan">Sedan</b-form-radio>-->
-<!--                <b-form-radio name="vehicleType" value="Compact">Compact</b-form-radio>-->
-<!--                <b-form-radio name="vehicleType" value="Cross Over">Cross Over</b-form-radio>-->
-<!--                <b-form-radio name="vehicleType" value="Truck">Truck</b-form-radio>-->
+                <b-form-radio
+                        v-for="type in vehicleTypes" v-bind:value="type" v-bind:key="type" name="vehicleType">{{type}}</b-form-radio>
             </b-form-radio-group>
         </b-form-group>
 
@@ -42,6 +39,7 @@
 </template>
 
 <script>
+    //TODO: Put something in to change the title when CREATING vs EDITING a vehicle
     module.exports = {
         props: {
             // the vehicle we are editing
@@ -53,7 +51,7 @@
                     make: "",
                     model: "",
                     type: "",
-                    year: 0
+                    year: 0 //TODO: Is there a way to set it by default to the current year? 0 is sketchy, anyway
                 })
             },
         },
@@ -64,17 +62,16 @@
                 // newVehicle: Object.assign({}, this.vehicle),
                 errors: {},
                 // status code of 0 means nothing to update
-                status: {code:0},
-                vehicleTypes: ['Sedan', 'Compact', 'Cross Over', 'Truck']
+                status: {code: 0},
+                vehicleTypes: ['Sedan', 'Compact', 'Cross Over', 'Truck'] //valid vehicle types
             }
         },
         methods: {
-            showModal: function() {
-              this.$refs['input-modal'].show();
-            },
-            hideModal: function() {
-                this.$refs['input-modal'].hide();
-            },
+            /**
+             * saving vehicle function,
+             * resets all errors,
+             * set the status code to be waiting for server, and send the save event back to the parent
+             */
             saveVehicle: function() {
                 this.errors = {
                     vehicleID: null,
@@ -91,10 +88,14 @@
 
         },
         computed: {
+            /**
+             * convert the fact that an error message exists to the proper state of the form inputs
+             * if an error exists then set the state to false (which will show error to user)
+             * if the error message does not exist (null) then set the state to null (no error message)
+             * @returns {{year: *, model: *, type: *, make: *}}
+             */
             states: function() {
-                // convert the fact that an error message exists to the proper state of the form inputs
-                // if an error exists then set the state to false (which will show error to user)
-                // if the error message does not exist (null) then set the state to null (no error message)
+                //for each input, if there are errors on that field, return false, else return null
                 return {
                     make: this.errors.make ? false : null,
                     model: this.errors.model ? false : null,
@@ -103,6 +104,7 @@
                 }
             }
         }
+        //TODO: We have a style section below- do we need it?
     }
 </script>
 
