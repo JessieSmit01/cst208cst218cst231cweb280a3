@@ -139,22 +139,22 @@ class Vehicle extends ORM\Entity
         }
         //https://www.w3schools.com/php/php_date.asp - referenced this web site to help me in creating and comparing date time objects in PHP
         //strtotime takes in a string and turns the string into a date time
-        $vDate = strtotime("January 1 " . $this->year);
+        $vDate = date_create("January 1 " . $this->year);
         //the upper bound is equal to the current year plus to years
         //for the upperBoundDate - I used strtotime to take in the current time and the string of '+2 years' so that strtotime knows to create a
         //date of the current time and add 2 years to it.
         //turn the vehicle year into a date object with the year provided and have the month and day be January 1st of that year
-        $upperBoundDate = strtotime("January 1 +2 Years", time()); //set the upperBoundDate to be January 1st of the current year plus 2 years.
-
+        $upperBoundDate = new DateTime('now'); //set the upperBoundDate to be January 1st of the current year plus 2 years.
+        $upperBoundDate->modify("+2 years");
         //when debugging I noticed that the datetime objects are turned to an int for comparing
         //ensure that the year is not null and greater than 0
-        if( $vDate === false || $this->year < 0)
+        if( $this->year < "1896"  || date_format($vDate, 'Y') < "1896")
         {
-            $validationResult ['year'] = $this->getDisplayName('year') .  ' must be an integer greater than or equal to 0';
+            $validationResult ['year'] = $this->getDisplayName('year') .  ' must be greater than or equal to 1896';
         }
 
         //check to make sure that the vehicle year is less than the upperBoundDate (current year plus 2 years)
-        else if(!($vDate < $upperBoundDate)) //Used https://www.w3schools.com/php/php_date.asp to understand how to get the current date
+        else if(!(date_format($vDate, 'Y') < date_format($upperBoundDate, 'Y'))) //Used https://www.w3schools.com/php/php_date.asp to understand how to get the current date
         {
             $validationResult ['year'] = $this->getDisplayName('year') . ' must be less than the current year plus 2 years';
         }
