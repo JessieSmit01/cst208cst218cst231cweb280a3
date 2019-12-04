@@ -1,6 +1,11 @@
 <template>
     <!-- title does not currently change whether editing or creating new vehicle -->
-    <b-modal title="Create Vehicle" v-model="modalShown" hide-footer>
+    <b-modal
+            title="Create Vehicle"
+            hide-footer
+            ref="input-modal"
+            id="inputModal"
+    >
         <!-- form input for the make of the vehicle -->
         <label>Make:</label>
         <b-form-group :invalid-feedback="errors.make" :state="states.make">
@@ -23,10 +28,11 @@
         <label>Type:</label>
         <b-form-group :invalid-feedback="errors.type" :state="states.type">
             <b-form-radio-group v-model="vehicle.type">
-                <b-form-radio name="vehicleType" value="Sedan">Sedan</b-form-radio>
-                <b-form-radio name="vehicleType" value="Compact">Compact</b-form-radio>
-                <b-form-radio name="vehicleType" value="Cross Over">Cross Over</b-form-radio>
-                <b-form-radio name="vehicleType" value="Truck">Truck</b-form-radio>
+                <b-form-radio v-for="type in vehicleTypes" v-bind:value="type" name="vehicleType">{{type}}</b-form-radio>
+<!--                <b-form-radio name="vehicleType" value="Sedan">Sedan</b-form-radio>-->
+<!--                <b-form-radio name="vehicleType" value="Compact">Compact</b-form-radio>-->
+<!--                <b-form-radio name="vehicleType" value="Cross Over">Cross Over</b-form-radio>-->
+<!--                <b-form-radio name="vehicleType" value="Truck">Truck</b-form-radio>-->
             </b-form-radio-group>
         </b-form-group>
 
@@ -50,12 +56,6 @@
                     year: 0
                 })
             },
-            // determine whether the model is shown or not, may not be necessary
-            modalShown: {
-                type: Boolean,
-                // default value of true, to show it
-                default: ()=>(false)
-            }
         },
         data: function() {
             return {
@@ -64,10 +64,17 @@
                 // newVehicle: Object.assign({}, this.vehicle),
                 errors: {},
                 // status code of 0 means nothing to update
-                status: {code:0}
+                status: {code:0},
+                vehicleTypes: ['Sedan', 'Compact', 'Cross Over', 'Truck']
             }
         },
         methods: {
+            showModal: function() {
+              this.$refs['input-modal'].show();
+            },
+            hideModal: function() {
+                this.$refs['input-modal'].hide();
+            },
             saveVehicle: function() {
                 this.errors = {
                     vehicleID: null,

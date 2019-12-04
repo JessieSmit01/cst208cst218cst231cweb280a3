@@ -26,7 +26,6 @@
 
 <!--    The b-table component -->
     <vehicle-table
-
             :refresh-state="refresh"
             @edit="editVehicle"
             @add="addVehicle"
@@ -36,10 +35,8 @@
     <vehicle-input
             :key="vehicle.vehicleID"
             :vehicle="vehicle"
-            :modal-shown="showModalFromComponent"
-
             @save="sendVehicle"
-            @cancel="vehicle = {}; showModalFromComponent=false"
+            @cancel="cancelModal"
     ></vehicle-input>
 
 <!--    DEBUG SECTION... KEEP OR DELETE???-->
@@ -63,22 +60,20 @@
             axiosResult: {}, //debug purposes
             searchString: '', //string to search by
             sqlDebug: '',
-            showModalFromComponent: false,
+            // showModalFromComponent: false,
             vehicle: {},
             refresh: false
 
         },
         methods: {
-            refreshData: function() {
-                this.refresh = true;
-            },
             /**
              * open the modal to create a new vehicle
              * no need to send in an object, use the modal's default blank object
              */
             addVehicle: function() {
-                this.showModalFromComponent = true; //show the modal
                 this.vehicle = {};
+                this.openModal();
+
             },
             /**
              * open the modal to edit the vehicle
@@ -86,8 +81,20 @@
              */
             editVehicle: function(vehicle) {
                 // this is called from VehicleTable.vue
-                this.showModalFromComponent = true; //show the modal
                 this.vehicle = Object.assign({}, vehicle); //create a new object from what we received
+                this.openModal();
+
+            },
+            closeModal: function() {
+                this.$root.$emit('bv::hide::modal');
+                console.log("Close modal");
+            },
+            openModal: function() {
+                console.log("Open modal");
+                this.$root.$emit('bv::show::modal', 'inputModal');
+            },
+            cancelModal: function() {
+                this.vehicle = {};
             },
             /**
              * send the vehicle object to the database
@@ -103,9 +110,8 @@
                 }).then(response => {
                     this.axiosResult = response;
                     status.code = 1; // let the component know that the vehicle was successfully added to the database
-                    this.showModalFromComponent = false;
                     this.$root.$emit('bv::refresh::table', 'table');
-
+                    this.closeModal();
 
                 }).catch(errors => {
                     let response = errors.response;
