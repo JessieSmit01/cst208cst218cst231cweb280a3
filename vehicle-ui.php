@@ -36,7 +36,6 @@
             :key="vehicle.vehicleID"
             :vehicle="vehicle"
             @save="sendVehicle"
-            @cancel="cancelModal"
     ></vehicle-input>
 
 <!--    DEBUG SECTION... KEEP OR DELETE???-->
@@ -59,21 +58,17 @@
         data: {
             axiosResult: {}, //debug purposes
             searchString: '', //string to search by
-            sqlDebug: '',
-            // showModalFromComponent: false,
-            vehicle: {},
-            refresh: false
-
+            sqlDebug: '', //also debug
+            vehicle: {}, //current vehicle being added/edited
         },
         methods: {
             /**
+             * //TODO: This comment doesn't match- should it?
              * open the modal to create a new vehicle
              * no need to send in an object, use the modal's default blank object
              */
             addVehicle: function() {
                 this.vehicle = {};
-
-
             },
             /**
              * open the modal to edit the vehicle
@@ -81,12 +76,8 @@
              */
             editVehicle: function(vehicle) {
                 // this is called from VehicleTable.vue
+                //TODO: Let the input figure out how to make a new vehicle
                 this.vehicle = Object.assign({}, vehicle); //create a new object from what we received
-
-
-            },
-            cancelModal: function() {
-                this.vehicle = {};
             },
             /**
              * send the vehicle object to the database
@@ -97,17 +88,17 @@
             sendVehicle: function(vehicle, errorMessages, status) {
                 axios({
                     method: vehicle.vehicleID ? "put" : "post", // determine which method by whether or not vehicleID is set
-                    url: "vehicle-api.php",
-                    data: vehicle
-                }).then(response => {
-                    this.axiosResult = response;
+                    url: "vehicle-api.php", //send to the API
+                    data: vehicle //give it the vehicle object
+                }).then(response => { //on success,
+                    this.axiosResult = response; //show the axios result in the footer
                     status.code = 1; // let the component know that the vehicle was successfully added to the database
-                    this.$root.$emit('bv::refresh::table', 'table');
+                    this.$root.$emit('bv::refresh::table', 'vehicleTable'); //refresh the table: https://bootstrap-vue.js.org/docs/components/table/#force-refreshing-of-table-data
+                    this.$bvModal.hide('inputModal'); //and hide the modal: https://bootstrap-vue.js.org/docs/components/modal#using-thisbvmodalshow-and-thisbvmodalhide-instance-methods
 
-
-                }).catch(errors => {
+                }).catch(errors => { //and if there are any errors,
                     let response = errors.response;
-                    this.axiosResult = response;
+                    this.axiosResult = response; //show the errors in the footer
                     status.code = 0; // let the component know that it did not save to the database
                     if(response.status == 422) // validation error
                     {
