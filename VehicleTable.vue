@@ -36,10 +36,6 @@
                 </b-input-group>
             </b-form-group>
         </b-col>
-
-
-<!--        TODO: this button is not going to stay here. TESTING PURPOSES ONLY -->
-<!--        <b-button @click="refresh">Refresh Table</b-button>-->
         <!-- TABLE PROPERTIES: all from https://bootstrap-vue.js.org/docs/components/table
             ref: so the refresh method knows what to refer to,
             striped: cosmetic, makes it look nice, hover: gives it a little styling change on hover
@@ -52,6 +48,7 @@
             items: link to the provider to tell it to get the data from there
          -->
         <b-table
+                id="table"
                 ref="table"
                 striped
                 hover
@@ -71,7 +68,7 @@
             <!-- https://bootstrap-vue.js.org/docs/components/table/#header-and-footer-custom-rendering-via-scoped-slots -->
             <template v-slot:head(actions)="data" >
                 <b-button
-                        @click="add"
+                        @click="edit({})"
                         class="fas fa-plus"
                         title="Add"
                         variant="success"
@@ -87,6 +84,7 @@
                         @click="edit(data.item)"
                         class="btn btn-primary fas fa-edit"
                         title="Edit"
+                        id="btnEdit"
                         variant="medium"
                 ></b-button>
             </template>
@@ -205,15 +203,17 @@
              * @param vehicle
              */
             edit(vehicle) {
-                this.$emit('edit', vehicle);
+                this.$bvModal.show('inputModal');
             },
+
 
             /**
              * event called when the add button is clicked. It just emits an add event.
              */
             add() {
                 this.$emit('add');
-            },
+            }
+
         }
 
     }

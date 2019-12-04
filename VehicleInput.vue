@@ -88,7 +88,8 @@
                 this.status.code = -1;
                 // newVehicle is connected to the text inputs, so we need to send that object to save new values to the database
                 this.$emit('save', this.vehicle, this.errors, this.status);
-            }
+            },
+
         },
         computed: {
             states: function() {

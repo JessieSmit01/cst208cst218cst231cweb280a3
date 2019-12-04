@@ -23,8 +23,7 @@
 
 <!-- VUE SECTION-->
 <div id="managed_by_vue_js">
-    <b-button @click="openModal">Open modal</b-button>
-    <b-button @click="closeModal">Close modal</b-button>
+
 <!--    The b-table component -->
     <vehicle-table
             :refresh-state="refresh"
@@ -58,13 +57,13 @@
     new Vue({
         el: '#managed_by_vue_js',
         data: {
-            vehicles: [],
             axiosResult: {}, //debug purposes
             searchString: '', //string to search by
             sqlDebug: '',
             // showModalFromComponent: false,
             vehicle: {},
             refresh: false
+
         },
         methods: {
             /**
@@ -73,7 +72,7 @@
              */
             addVehicle: function() {
                 this.vehicle = {};
-                this.openModal();
+
 
             },
             /**
@@ -83,16 +82,8 @@
             editVehicle: function(vehicle) {
                 // this is called from VehicleTable.vue
                 this.vehicle = Object.assign({}, vehicle); //create a new object from what we received
-                this.openModal();
 
-            },
-            closeModal: function() {
-                this.$root.$emit('bv::hide::modal');
-                console.log("Close modal");
-            },
-            openModal: function() {
-                console.log("Open modal");
-                this.$root.$emit('bv::show::modal', 'inputModal');
+
             },
             cancelModal: function() {
                 this.vehicle = {};
@@ -111,8 +102,9 @@
                 }).then(response => {
                     this.axiosResult = response;
                     status.code = 1; // let the component know that the vehicle was successfully added to the database
-                    this.refreshState = true;
-                    this.closeModal();
+                    this.$root.$emit('bv::refresh::table', 'table');
+
+
                 }).catch(errors => {
                     let response = errors.response;
                     this.axiosResult = response;
