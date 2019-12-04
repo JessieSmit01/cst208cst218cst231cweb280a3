@@ -26,7 +26,6 @@
 
 <!--    The b-table component -->
     <vehicle-table
-            :refresh-state="refresh"
             @edit="editVehicle"
             @add="addVehicle"
     ></vehicle-table>
