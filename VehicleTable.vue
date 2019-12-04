@@ -84,6 +84,7 @@
                         @click="edit(data.item)"
                         class="btn btn-primary fas fa-edit"
                         title="Edit"
+                        id="btnEdit"
                         variant="medium"
                 ></b-button>
             </template>
@@ -202,7 +203,7 @@
              * @param vehicle
              */
             edit(vehicle) {
-                this.$emit('edit', vehicle);
+                this.$bvModal.show('inputModal');
             },
 
 

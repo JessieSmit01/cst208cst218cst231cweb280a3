@@ -72,7 +72,7 @@
              */
             addVehicle: function() {
                 this.vehicle = {};
-                this.openModal();
+
 
             },
             /**
@@ -82,16 +82,8 @@
             editVehicle: function(vehicle) {
                 // this is called from VehicleTable.vue
                 this.vehicle = Object.assign({}, vehicle); //create a new object from what we received
-                this.openModal();
 
-            },
-            closeModal: function() {
-                this.$root.$emit('bv::hide::modal');
-                console.log("Close modal");
-            },
-            openModal: function() {
-                console.log("Open modal");
-                this.$root.$emit('bv::show::modal', 'inputModal');
+
             },
             cancelModal: function() {
                 this.vehicle = {};
@@ -111,7 +103,7 @@
                     this.axiosResult = response;
                     status.code = 1; // let the component know that the vehicle was successfully added to the database
                     this.$root.$emit('bv::refresh::table', 'table');
-                    this.closeModal();
+
 
                 }).catch(errors => {
                     let response = errors.response;
