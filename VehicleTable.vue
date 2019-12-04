@@ -38,8 +38,7 @@
         </b-col>
 
 
-<!--        TODO: this button is not going to stay here. TESTING PURPOSES ONLY -->
-        <b-button @click="refresh">Refresh Table</b-button>
+
         <!-- TABLE PROPERTIES: all from https://bootstrap-vue.js.org/docs/components/table
             ref: so the refresh method knows what to refer to,
             striped: cosmetic, makes it look nice, hover: gives it a little styling change on hover
@@ -52,6 +51,7 @@
             items: link to the provider to tell it to get the data from there
          -->
         <b-table
+                id="table"
                 ref="table"
                 striped
                 hover
@@ -111,6 +111,23 @@
 
     module.exports = {
         name: "VehicleTable", //how to refer to this component
+        props: {
+            refreshState: {
+                type: Boolean,
+                // default value of true, to not refresh the data
+                default: ()=>(false)
+            }
+        },
+        watch: {
+            refreshState: {
+                handler: function (newValue, oldValue) {
+                    if (newValue === true) {
+                        this.refresh();
+                        this.refreshState = false;
+                    }
+                }
+            }
+        },
         data() { //all of the data belonging to the table
             return {
                 //https://bootstrap-vue.js.org/docs/components/table/#automated-table-busy-state
