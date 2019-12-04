@@ -138,24 +138,26 @@ class Vehicle extends ORM\Entity
             return $validationResult;
         }
         //https://www.w3schools.com/php/php_date.asp - referenced this web site to help me in creating and comparing date time objects in PHP
-        //strtotime takes in a string and turns the string into a date time
+        //https://www.w3schools.com/Php/func_date_date_create.asp used to help aid in using the date_create function
         $vDate = date_create("January 1 " . $this->year);
         //the upper bound is equal to the current year plus to years
-        //for the upperBoundDate - I used strtotime to take in the current time and the string of '+2 years' so that strtotime knows to create a
-        //date of the current time and add 2 years to it.
-        //turn the vehicle year into a date object with the year provided and have the month and day be January 1st of that year
-        $upperBoundDate = new DateTime('now'); //set the upperBoundDate to be January 1st of the current year plus 2 years.
+        $upperBoundDate = new DateTime('now'); //set the upperBoundDate to be equal to the current time.
+        //modify the upperBoundDate to add 2 years to it
         $upperBoundDate->modify("+2 years");
-        //when debugging I noticed that the datetime objects are turned to an int for comparing
-        //ensure that the year is not null and greater than 0
-        if( $this->year < "1896"  || date_format($vDate, 'Y') < "1896")
+        //check if the date is less than 1896 or its false (bad data like letters passed)
+        if( $this->year < 1896 || $vDate === false)
         {
+            //add error
             $validationResult ['year'] = $this->getDisplayName('year') .  ' must be greater than or equal to 1896';
         }
 
         //check to make sure that the vehicle year is less than the upperBoundDate (current year plus 2 years)
+        //https://www.w3schools.com/PHP/func_date_date_format.asp used this to help understand and find date_format
+        //it takes in a date object and a format string. Y formats the date as a full year only. this is what is used to compare
+        //the date against the upper bound date formatted as only a year string also
         else if(!(date_format($vDate, 'Y') < date_format($upperBoundDate, 'Y'))) //Used https://www.w3schools.com/php/php_date.asp to understand how to get the current date
         {
+            //add error
             $validationResult ['year'] = $this->getDisplayName('year') . ' must be less than the current year plus 2 years';
         }
 

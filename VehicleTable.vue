@@ -187,7 +187,7 @@
              */
             async add() {
                 //the "add" functions fine without being asynchronous, but it's possible that an edge case would break it
-                await this.$emit('add'); //emit the add event
+                await this.$emit('add' ); //emit the add event
                 this.$bvModal.show('inputModal'); //then show the vehicle
 
             }
