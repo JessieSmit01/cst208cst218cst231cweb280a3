@@ -71,7 +71,13 @@
             addVehicle: function() {
                 //TODO: If you enter data into a new vehicle, cancel out, and then click add again, it will still retain the same data
                 this.modalTitle = 'Create Vehicle';
-                this.vehicle = {};
+                this.vehicle = {
+                    vehicleID: null,
+                    make: null,
+                    model: null,
+                    type: null,
+                    year: null};
+                console.log(this.vehicle); //the vehicle is successfully set here but yet it is not updating in modal
             },
             /**
              * open the modal to edit the vehicle

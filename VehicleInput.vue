@@ -5,6 +5,7 @@
             hide-footer
             ref="input-modal"
             id="inputModal"
+            @cancel="newVehicle={}"
     >
         <!-- form input for the make of the vehicle -->
         <label>Make:</label>
@@ -45,7 +46,13 @@
             vehicle: {
                 type: Object,
                 // default values for the vehicle object
-                default: ()=>({})
+                default: ()=>({
+                    vehicleID: null,
+                    make: null,
+                    model: null,
+                    type: null,
+                    year: null
+                })
             },
             title: {
                 type: String,
