@@ -28,7 +28,8 @@
         <label>Type:</label>
         <b-form-group :invalid-feedback="errors.type" :state="states.type">
             <b-form-radio-group v-model="vehicle.type">
-                <b-form-radio v-for="type in vehicleTypes" v-bind:value="type" name="vehicleType">{{type}}</b-form-radio>
+                <b-form-radio
+                        v-for="type in vehicleTypes" v-bind:value="type" name="vehicleType">{{type}}</b-form-radio>
 <!--                <b-form-radio name="vehicleType" value="Sedan">Sedan</b-form-radio>-->
 <!--                <b-form-radio name="vehicleType" value="Compact">Compact</b-form-radio>-->
 <!--                <b-form-radio name="vehicleType" value="Cross Over">Cross Over</b-form-radio>-->
@@ -69,12 +70,12 @@
             }
         },
         methods: {
-            showModal: function() {
-              this.$refs['input-modal'].show();
-            },
-            hideModal: function() {
-                this.$refs['input-modal'].hide();
-            },
+            // showModal: function() {
+            //   this.$refs['input-modal'].show();
+            // },
+            // hideModal: function() {
+            //     this.$refs['input-modal'].hide();
+            // },
             saveVehicle: function() {
                 this.errors = {
                     vehicleID: null,
