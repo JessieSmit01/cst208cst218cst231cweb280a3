@@ -1,33 +1,34 @@
 <template>
     <!-- title does not currently change whether editing or creating new vehicle -->
     <b-modal
-            title="Create Vehicle"
+            v-bind:title="title"
             hide-footer
             ref="input-modal"
             id="inputModal"
+            @cancel="newVehicle={}"
     >
         <!-- form input for the make of the vehicle -->
         <label>Make:</label>
         <b-form-group :invalid-feedback="errors.make" :state="states.make">
-            <b-form-input v-model="vehicle.make" :state="states.make" trim @keyDown="errors.make=null"></b-form-input>
+            <b-form-input v-model="newVehicle.make" :state="states.make" trim @keyDown="errors.make=null"></b-form-input>
         </b-form-group>
 
         <!-- form input for the model of the vehicle -->
         <label>Model:</label>
         <b-form-group :invalid-feedback="errors.model" :state="states.model">
-            <b-form-input v-model="vehicle.model" :state="states.model" trim @keyDown="errors.model=null"></b-form-input>
+            <b-form-input v-model="newVehicle.model" :state="states.model" trim @keyDown="errors.model=null"></b-form-input>
         </b-form-group>
 
         <!-- form input for the year of the vehicle -->
         <label>Year:</label>
         <b-form-group :invalid-feedback="errors.year" :state="states.year">
-            <b-form-input type="number" min=1896 v-model="vehicle.year" :state="states.year" trim @keyDown="errors.year=null"></b-form-input>
+            <b-form-input type="number" min=1896 v-model="newVehicle.year" :state="states.year" trim @keyDown="errors.year=null"></b-form-input>
         </b-form-group>
 
         <!-- form input for the type of the vehicle, with four radio buttons -->
         <label>Type:</label>
         <b-form-group :invalid-feedback="errors.type" :state="states.type">
-            <b-form-radio-group v-model="vehicle.type">
+            <b-form-radio-group v-model="newVehicle.type">
                 <b-form-radio
                         v-for="type in vehicleTypes" v-bind:value="type" v-bind:key="type" name="vehicleType">{{type}}</b-form-radio>
             </b-form-radio-group>
@@ -39,7 +40,6 @@
 </template>
 
 <script>
-    //TODO: Put something in to change the title when CREATING vs EDITING a vehicle
     module.exports = {
         props: {
             // the vehicle we are editing
@@ -48,21 +48,23 @@
                 // default values for the vehicle object
                 default: ()=>({
                     vehicleID: null,
-                    make: "",
-                    model: "",
-                    type: "",
-                    year: 0 //TODO: Is there a way to set it by default to the current year? 0 is sketchy, anyway
+                    make: null,
+                    model: null,
+                    type: null,
+                    year: null
                 })
             },
+            title: {
+                type: String,
+                default: ()=>"Create Vehicle"
+            }
         },
         data: function() {
             return {
-                // copy data from the passed in student to the newVehicle (temporary) object
-                //TODO: See if we can get the "newVehicle functioning properly, because it's definitely better practice
-                // newVehicle: Object.assign({}, this.vehicle),
-                errors: {},
-                // status code of 0 means nothing to update
-                status: {code: 0},
+                // copy data from the passed in vehicle to the newVehicle (temporary) object
+                newVehicle: Object.assign({}, this.vehicle),
+                errors: {}, //no initial errors
+                status: {code: 0}, // status code of 0 means nothing to update
                 vehicleTypes: ['Sedan', 'Compact', 'Cross Over', 'Truck'] //valid vehicle types
             }
         },
@@ -83,7 +85,7 @@
                 // status code of -1 means we are waiting to hear back from the server
                 this.status.code = -1;
                 // newVehicle is connected to the text inputs, so we need to send that object to save new values to the database
-                this.$emit('save', this.vehicle, this.errors, this.status);
+                this.$emit('save', this.newVehicle, this.errors, this.status);
             },
 
         },
