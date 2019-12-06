@@ -1,45 +1,46 @@
 <template>
     <!-- title does not currently change whether editing or creating new vehicle -->
-    <!--https://bootstrap-vue.js.org/docs/components/modal/ This website helped me in finding events for the modal.
-    I was looking for events to fire when the modal was closed or forced to hide and cancelled.-->
     <b-modal
-            v-bind:title="title"
-            hide-footer
             ref="input-modal"
             id="inputModal"
-            @cancel="resetOriginalValues"
-            @close="resetOriginalValues"
-            @hide="resetOriginalValues"
+            v-bind:no-close-on-esc="isBusy"
+            v-bind:no-close-on-backdrop="isBusy"
     >
-        <!-- form input for the make of the vehicle -->
-        <label>Make:</label>
-        <b-form-group :invalid-feedback="errors.make" :state="states.make">
-            <b-form-input v-model="newVehicle.make" :state="states.make" trim @keyDown="errors.make=null"></b-form-input>
-        </b-form-group>
+        <template v-slot:modal-header="{ close }">
+            <!-- Emulate built in modal header close button action -->
+            <b-button class="far fa-save" variant="danger" title="Close" @click="close" :disabled="isBusy"></b-button>
+            <h5>{{title}}</h5>
+        </template>
+        <b-container>
+            <!-- form input for the make of the vehicle -->
+            <b-form-group :invalid-feedback="errors.make" :state="states.make" label="Name" :disabled="isBusy">
+                <b-form-input v-model="newVehicle.make" :state="states.make" trim @keyDown="errors.make=null"></b-form-input>
+            </b-form-group>
 
-        <!-- form input for the model of the vehicle -->
-        <label>Model:</label>
-        <b-form-group :invalid-feedback="errors.model" :state="states.model">
-            <b-form-input v-model="newVehicle.model" :state="states.model" trim @keyDown="errors.model=null"></b-form-input>
-        </b-form-group>
+            <!-- form input for the model of the vehicle -->
+            <b-form-group :invalid-feedback="errors.model" :state="states.model" label="Model" :disabled="isBusy">
+                <b-form-input v-model="newVehicle.model" :state="states.model" trim @keyDown="errors.model=null"></b-form-input>
+            </b-form-group>
 
-        <!-- form input for the year of the vehicle -->
-        <label>Year:</label>
-        <b-form-group :invalid-feedback="errors.year" :state="states.year">
-            <b-form-input type="number" min=1896 v-model="newVehicle.year" :state="states.year" trim @keyDown="errors.year=null"></b-form-input>
-        </b-form-group>
+            <!-- form input for the year of the vehicle -->
+            <b-form-group :invalid-feedback="errors.year" :state="states.year" label="Year" :disabled="isBusy">
+                <b-form-input type="number" min=1896 v-model="newVehicle.year" :state="states.year" trim @keyDown="errors.year=null"></b-form-input>
+            </b-form-group>
 
-        <!-- form input for the type of the vehicle, with four radio buttons -->
-        <label>Type:</label>
-        <b-form-group :invalid-feedback="errors.type" :state="states.type">
-            <b-form-radio-group v-model="newVehicle.type">
-                <b-form-radio
-                        v-for="type in vehicleTypes" v-bind:value="type" v-bind:key="type" name="vehicleType">{{type}}</b-form-radio>
-            </b-form-radio-group>
-        </b-form-group>
-
-        <!-- button to save the vehicle, currently doesn't spin or block exiting -->
-        <button class="btn btn-primary far fa-save" title="Save" @click.stop="saveVehicle"/>
+            <!-- form input for the type of the vehicle, with four radio buttons -->
+            <b-form-group :invalid-feedback="errors.type" :state="states.type" label="Type" :disabled="isBusy">
+                <b-form-radio-group v-model="newVehicle.type">
+                    <b-form-radio
+                            v-for="type in vehicleTypes" v-bind:value="type" v-bind:key="type" name="vehicleType">{{type}}</b-form-radio>
+                </b-form-radio-group>
+            </b-form-group>
+        </b-container>
+<!--        https://bootstrap-vue.js.org/docs/components/modal/#variants: used the example here for the footer template to override the default footer-->
+        <template v-slot:modal-footer>
+            <div>
+                <b-button class="far fa-save" variant="primary" title="Save" @click="saveVehicle" :disabled="isBusy"/>
+            </div>
+        </template>
     </b-modal>
 </template>
 
@@ -79,6 +80,7 @@
              * set the status code to be waiting for server, and send the save event back to the parent
              */
             saveVehicle: function() {
+                this.disableModal();
                 this.errors = {
                     vehicleID: null,
                     make: null,
@@ -91,9 +93,8 @@
                 // newVehicle is connected to the text inputs, so we need to send that object to save new values to the database
                 this.$emit('save', this.newVehicle, this.errors, this.status);
             },
-            resetOriginalValues: function(){
-                //Learned in class
-                this.newVehicle = Object.assign({}, this.vehicle)
+            disableModal: function() {
+
             }
 
         },
@@ -112,6 +113,9 @@
                     year: this.errors.year ? false : null,
                     type: this.errors.type ? false : null
                 }
+            },
+            isBusy: function() {
+                return true;
             }
         }
         //TODO: We have a style section below- do we need it?
