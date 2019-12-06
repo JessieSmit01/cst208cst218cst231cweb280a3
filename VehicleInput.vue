@@ -9,12 +9,12 @@
             v-bind:no-close-on-backdrop="isBusy"
             v-bind:hide-header-close="isBusy"
     >
-<!--        https://bootstrap-vue.js.org/docs/components/modal/#example-modal-using-custom-scoped-slots using this example for modal header slot
-        overriding the header slot so that custom functionality can be set for the close button-->
-<!--        <template v-slot:modal-header="{ close }" v-if="!isBusy">-->
-<!--            <b-button class="fas fa-times" variant="danger" title="Close" @click="close" class="float-right" :disabled="isBusy"></b-button>-->
-<!--&lt;!&ndash;            <h5>{{title}}</h5>&ndash;&gt;-->
-<!--        </template>-->
+        <!--        https://bootstrap-vue.js.org/docs/components/modal/#example-modal-using-custom-scoped-slots using this example for modal header slot
+                overriding the header slot so that custom functionality can be set for the close button-->
+        <!--        <template v-slot:modal-header="{ close }" v-if="!isBusy">-->
+        <!--            <b-button class="fas fa-times" variant="danger" title="Close" @click="close" class="float-right" :disabled="isBusy"></b-button>-->
+        <!--&lt;!&ndash;            <h5>{{title}}</h5>&ndash;&gt;-->
+        <!--        </template>-->
         <b-container>
             <!-- form input for the make of the vehicle -->
             <b-form-group :invalid-feedback="errors.make" :state="states.make" label="Name" :disabled="isBusy">
@@ -45,10 +45,8 @@
                 <b-button class="far fa-save" variant="primary" title="Save" @click="saveVehicle" :disabled="loading"/>
             </div>
             <div v-else>
-
                 <b-button variant="primary" title="Save" @click="saveVehicle" :disabled="loading"><b-spinner class="align-middle"></b-spinner>
                     <strong>Saving...</strong></b-button>
-
             </div>
         </template>
     </b-modal>
@@ -131,7 +129,7 @@
                 }
             },
             isBusy: function() {
-                return false;
+                return this.loading;
             }
         }
         //TODO: We have a style section below- do we need it?
