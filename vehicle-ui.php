@@ -35,6 +35,7 @@
             :key="vehicle.vehicleID"
             :vehicle="vehicle"
             :title="modalTitle"
+            :loading="isSaving"
             @save="sendVehicle"
             :loading="isSaving"
     ></vehicle-input>
@@ -63,6 +64,7 @@
             vehicle: {}, //current vehicle being added/edited
             modalTitle: '' ,//what to title the modal
             isSaving: false //true when a save is occuring
+
         },
         methods: {
             /**
@@ -90,7 +92,9 @@
              * @param status: or this?
              */
              sendVehicle: function(vehicle, errorMessages, status) {
+
                 this.isSaving = true; //a save is currently in proccess
+
 
                 axios({
                     method: vehicle.vehicleID ? "put" : "post", // determine which method by whether or not vehicleID is set
