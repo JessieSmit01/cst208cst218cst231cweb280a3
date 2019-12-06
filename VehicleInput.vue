@@ -7,9 +7,7 @@
             hide-footer
             ref="input-modal"
             id="inputModal"
-            @cancel="resetOriginalValues"
-            @close="resetOriginalValues"
-            @hide="resetOriginalValues"
+            @show="resetOriginalValues"
     >
         <!-- form input for the make of the vehicle -->
         <label>Make:</label>
@@ -39,7 +37,8 @@
         </b-form-group>
 
         <!-- button to save the vehicle, currently doesn't spin or block exiting -->
-        <button class="btn btn-primary far fa-save" title="Save" @click.stop="saveVehicle"/>
+        <button class="btn btn-primary far fa-save" title="Save" @click.stop="saveVehicle"><b-spinner v-if="loading"></b-spinner></button>
+
     </b-modal>
 </template>
 
@@ -61,6 +60,10 @@
             title: {
                 type: String,
                 default: ()=>"Create Vehicle"
+            },
+            loading: {
+                type: Boolean,
+                default: ()=> false
             }
         },
         data: function() {
