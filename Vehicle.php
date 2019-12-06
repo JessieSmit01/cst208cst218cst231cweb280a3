@@ -34,12 +34,13 @@ class Vehicle extends ORM\Entity
      */
     public function validate_vehicleID()
     {
+        //instantiate array of error messages
         $validationResult = [];
         //check to make sure that the vehicleID is an integer greater than 0
         //vehicleID must be null since the table will need to autoincrement the value of vehicleID from the previous record if one exists
         if($this->vehicleID != null && $this->vehicleID <= 0) //vehicle id is not an int or less than or equal to zero or isn't null - invalid
         {
-            $validationResult ['vehicleID'] = $this->getDisplayName('vehicleID') . ' must be a unique autoincrementing integer greater than zero';
+            $validationResult ['vehicleID'] = $this->getDisplayName('vehicleID') . ' must be a unique auto incrementing integer greater than zero';
         }
         return $validationResult;
     }
@@ -53,6 +54,7 @@ class Vehicle extends ORM\Entity
      */
     public function validate_make()
     {
+        //instantiate array of error messages
         $validationResult = [];
         //check if make is empty string or null
         if(empty(trim($this->make)) || $this->make === null)
@@ -77,6 +79,7 @@ class Vehicle extends ORM\Entity
      */
     public function validate_model()
     {
+        //instantiate array of error messages
         $validationResult = [];
         //check if model is empty
         if(empty(trim($this->model))|| $this->model === null)
@@ -103,6 +106,7 @@ class Vehicle extends ORM\Entity
      */
     public function validate_type()
     {
+        //instantiate array of error messages
         $validationResult = [];
         $validTypes = ['Sedan', 'Compact', 'Cross Over', 'Truck'];
         //check if type is empty
@@ -132,14 +136,18 @@ class Vehicle extends ORM\Entity
      */
     public function validate_year()
     {
+        //instantiate array of error messages
         $validationResult = [];
 
         //https://www.w3schools.com/php/php_date.asp - referenced this web site to help me in creating and comparing date time objects in PHP
         //https://www.w3schools.com/Php/func_date_date_create.asp used to help aid in using the date_create function
+        //date_create takes in a date string and parses the string into a DateTime object
         $vDate = date_create("January 1 " . $this->year);
         //the upper bound is equal to the current year plus to years
-        $upperBoundDate = new DateTime('now'); //set the upperBoundDate to be equal to the current time.
+        $upperBoundDate = new DateTime('now'); //set the upperBoundDate to be equal to the current time. Also used https://www.w3schools.com/php/php_date.asp to aid in the constructor
+        //https://www.php.net/manual/en/datetime.modify.php - used for the modify function
         //modify the upperBoundDate to add 2 years to it
+        //modify takes a string and parses that into a Modified DateTime of the original DateTime
         $upperBoundDate->modify("+2 years");
         //check if the date is less than 1896 or its false (bad data like letters passed)
         if( $this->year < 1896 || $vDate === false)
@@ -181,7 +189,7 @@ class Vehicle extends ORM\Entity
         $this->addColumnDefinition("model", "nvarchar(25)", "not null"); //required
         //type must be an nvarchar with max length of 10 and not be null
         $this->addColumnDefinition("type", "nvarchar(10)", "not null"); //required
-        //year must be an integer
+        //year must be an integer and is required.
         $this->addColumnDefinition("year", "INTEGER", "not null"); //not specified as required
 
 
