@@ -22,7 +22,7 @@
 </div>
 
 <!-- VUE SECTION-->
-<div id="managed_by_vue_js">
+<div id="vehicleVue">
 
 <!--    The b-table component -->
     <vehicle-table
@@ -55,31 +55,23 @@
 <script>
 
     new Vue({
-        el: '#managed_by_vue_js',
+        el: '#vehicleVue',
         data: {
             axiosResult: {}, //debug purposes
             searchString: '', //string to search by
             sqlDebug: '', //also debug
             vehicle: {}, //current vehicle being added/edited
             modalTitle: '' ,//what to title the modal
-            isSaving: false
+            isSaving: false //true when a save is occuring
         },
         methods: {
             /**
-             * //TODO: This comment doesn't match- should it?
              * open the modal to create a new vehicle
-             * no need to send in an object, use the modal's default blank object
+             * nullify the vehicle object just in case
              */
             addVehicle: function() {
-                //TODO: If you enter data into a new vehicle, cancel out, and then click add again, it will still retain the same data
-                this.modalTitle = 'Create Vehicle';
-                this.vehicle = {
-                    vehicleID: null,
-                    make: null,
-                    model: null,
-                    type: null,
-                    year: null};
-                console.log(this.vehicle); //the vehicle is successfully set here but yet it is not updating in modal
+                this.modalTitle = 'Create Vehicle'; //set the title
+                this.vehicle = {}; //set the vehicle
             },
             /**
              * open the modal to edit the vehicle
@@ -88,7 +80,7 @@
             editVehicle: function(vehicle) {
                 // this is called from VehicleTable.vue
                 this.modalTitle = 'Edit Vehicle';
-                this.vehicle = vehicle; //create a new object from what we received
+                this.vehicle = vehicle; //set the object to what was received
             },
 
             /**
@@ -98,7 +90,7 @@
              * @param status: or this?
              */
              sendVehicle: function(vehicle, errorMessages, status) {
-                this.isSaving = true;
+                this.isSaving = true; //a save is currently in proccess
 
                 axios({
                     method: vehicle.vehicleID ? "put" : "post", // determine which method by whether or not vehicleID is set
@@ -125,14 +117,12 @@
                             this.sqlDebug = response.data;
                         }
                     }
-                }).finally(()=>{this.isSaving = false});
+                }).finally(()=>{this.isSaving = false}); //success or failure, the saving process is complete.
             }
         },
-        components: {
+        components: { //connect the components that are being used.
             'VehicleTable': httpVueLoader('./VehicleTable.vue'),
             'VehicleInput' : httpVueLoader('./VehicleInput.vue')
-        },
-        mounted() {
         }
     });
 </script>

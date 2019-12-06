@@ -199,6 +199,7 @@
 </script>
 
 <style scoped>
+/*style the table sort transition*/
     .flip-list-move {
         transition: transform .3s;
     }

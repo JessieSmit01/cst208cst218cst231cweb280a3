@@ -30,7 +30,7 @@
 
             <!-- form input for the type of the vehicle, with four radio buttons -->
             <b-form-group :invalid-feedback="errors.type" :state="states.type" label="Type" :disabled="loading">
-                <b-form-radio-group v-model="newVehicle.type">
+                <b-form-radio-group v-model="newVehicle.type" @change="errors.type=null">
                     <b-form-radio
                             v-for="type in vehicleTypes" v-bind:value="type" v-bind:key="type" name="vehicleType">{{type}}</b-form-radio>
                 </b-form-radio-group>
@@ -80,11 +80,10 @@
         data: function() {
             return {
                 // copy data from the passed in vehicle to the newVehicle (temporary) object
-                newVehicle: Object.assign({}, this.vehicle),
+                newVehicle: {},
                 errors: {}, //no initial errors
                 status: {code: 0}, // status code of 0 means nothing to update
-                vehicleTypes: ['Sedan', 'Compact', 'Cross Over', 'Truck'] //valid vehicle types
-
+                vehicleTypes: ['Sedan', 'Compact', 'Cross Over', 'Truck'], //valid vehicle types,
             }
         },
         methods: {
@@ -106,9 +105,21 @@
                 // newVehicle is connected to the text inputs, so we need to send that object to save new values to the database
                 this.$emit('save', this.newVehicle, this.errors, this.status);
             },
+            /**
+             * fires when the modal is open: make sure to clean out old data and errors.
+             */
             resetDefaultVehicleData: function()
             {
+                //re-assign the vehicle
                 this.newVehicle = Object.assign({}, this.vehicle);
+                //nullify all errors.
+                this.errors = {
+                    vehicleID: null,
+                    make: null,
+                    model: null,
+                    type: null,
+                    year: null
+                };
             }
         },
         computed: {
