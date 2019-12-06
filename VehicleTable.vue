@@ -168,7 +168,6 @@
                     return response.data;
 
                 }).catch(errors => {
-                    //TODO: Probably do some error handling
                     console.log(errors);
                     return [];
                 });

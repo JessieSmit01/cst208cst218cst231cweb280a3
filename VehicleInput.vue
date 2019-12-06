@@ -14,7 +14,7 @@
     >
         <b-container>
             <!-- form input for the make of the vehicle -->
-            <b-form-group :invalid-feedback="errors.make" :state="states.make" label="Name" :disabled="loading">
+            <b-form-group :invalid-feedback="errors.make" :state="states.make" label="Make" :disabled="loading">
                 <b-form-input v-model="newVehicle.make" :state="states.make" trim @keyDown="errors.make=null"></b-form-input>
             </b-form-group>
 

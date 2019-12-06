@@ -116,6 +116,7 @@ class Vehicle extends ORM\Entity
             $validationResult ['type'] = $this->getDisplayName('type') . ' cannot be empty or all spaces';
         }
         //check if the make it greater than 10 characters. If it is, add an error message
+        //and check if type is a valid value
         else if(!in_array($this->type, $validTypes)){$validationResult ['type'] = $this->getDisplayName('type') . ' must be either Sedan, Compact, Cross Over, or Truck';}
         else if(strlen($this->type) > 10) {$validationResult ['type'] = $this->getDisplayName('type') . ' cannot be greater than 10 characters';}
         //return any errors
