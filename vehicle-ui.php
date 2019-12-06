@@ -36,6 +36,7 @@
             :vehicle="vehicle"
             :title="modalTitle"
             @save="sendVehicle"
+            :loading="isSaving"
     ></vehicle-input>
 
 <!--    DEBUG SECTION... KEEP OR DELETE???-->
@@ -60,7 +61,8 @@
             searchString: '', //string to search by
             sqlDebug: '', //also debug
             vehicle: {}, //current vehicle being added/edited
-            modalTitle: '' //what to title the modal
+            modalTitle: '' ,//what to title the modal
+            isSaving: false
         },
         methods: {
             /**
@@ -96,6 +98,8 @@
              * @param status: or this?
              */
              sendVehicle: function(vehicle, errorMessages, status) {
+                this.isSaving = true;
+
                 axios({
                     method: vehicle.vehicleID ? "put" : "post", // determine which method by whether or not vehicleID is set
                     url: "vehicle-api.php", //send to the API
@@ -121,7 +125,7 @@
                             this.sqlDebug = response.data;
                         }
                     }
-                });
+                }).finally(()=>{this.isSaving = false});
             }
         },
         components: {
