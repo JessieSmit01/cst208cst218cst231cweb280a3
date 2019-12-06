@@ -1,16 +1,20 @@
 <template>
     <!-- title does not currently change whether editing or creating new vehicle -->
     <b-modal
+            v-bind:title="title"
+            v-bind:busy="isBusy"
             ref="input-modal"
             id="inputModal"
             v-bind:no-close-on-esc="isBusy"
             v-bind:no-close-on-backdrop="isBusy"
+            v-bind:hide-header-close="isBusy"
     >
-        <template v-slot:modal-header="{ close }">
-            <!-- Emulate built in modal header close button action -->
-            <b-button class="far fa-save" variant="danger" title="Close" @click="close" :disabled="isBusy"></b-button>
-            <h5>{{title}}</h5>
-        </template>
+<!--        https://bootstrap-vue.js.org/docs/components/modal/#example-modal-using-custom-scoped-slots using this example for modal header slot
+        overriding the header slot so that custom functionality can be set for the close button-->
+<!--        <template v-slot:modal-header="{ close }" v-if="!isBusy">-->
+<!--            <b-button class="fas fa-times" variant="danger" title="Close" @click="close" class="float-right" :disabled="isBusy"></b-button>-->
+<!--&lt;!&ndash;            <h5>{{title}}</h5>&ndash;&gt;-->
+<!--        </template>-->
         <b-container>
             <!-- form input for the make of the vehicle -->
             <b-form-group :invalid-feedback="errors.make" :state="states.make" label="Name" :disabled="isBusy">
@@ -71,6 +75,7 @@
                 errors: {}, //no initial errors
                 status: {code: 0}, // status code of 0 means nothing to update
                 vehicleTypes: ['Sedan', 'Compact', 'Cross Over', 'Truck'] //valid vehicle types
+
             }
         },
         methods: {
