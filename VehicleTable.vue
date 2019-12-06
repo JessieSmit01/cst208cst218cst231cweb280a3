@@ -37,19 +37,18 @@
             </b-form-group>
         </b-col>
         <!-- TABLE PROPERTIES: all from https://bootstrap-vue.js.org/docs/components/table
-            ref: so the refresh method knows what to refer to,
+            id: so the refresh method knows what to refer to,
             striped: cosmetic, makes it look nice, hover: gives it a little styling change on hover
             head-variant: looks nice, contrast!
             no-provider-sorting: enables local sorting
             primary-key: tell it the primary key so it can optimize rendering (else it uses the row index number that changes when sorting
             transition-props: tell it which bootstrap transition to use
             fields: which columns to show
-            isBusy: link to boolean indicating if the data ia still loading
+            filter: a search string to filter on
             items: link to the provider to tell it to get the data from there
          -->
         <b-table
-                id="table"
-                ref="table"
+                id="vehicleTable"
                 striped
                 hover
                 head-variant="dark"
@@ -58,7 +57,6 @@
                 :tbody-transition-props="transProps"
                 :fields="fields"
                 :filter="filter"
-                :busy="isBusy"
                 :items="provider"
         >
             <!-- A custom formatted header cell for the actions column
@@ -68,7 +66,7 @@
             <!-- https://bootstrap-vue.js.org/docs/components/table/#header-and-footer-custom-rendering-via-scoped-slots -->
             <template v-slot:head(actions)="data" >
                 <b-button
-                        @click="edit({})"
+                        @click="add()"
                         class="fas fa-plus"
                         title="Add"
                         variant="success"
@@ -109,34 +107,8 @@
 
     module.exports = {
         name: "VehicleTable", //how to refer to this component
-        props: {
-            refreshState: {
-                type: Boolean,
-                // default value of true, to not refresh the data
-                default: ()=>(false)
-            }
-        },
-        watch: {
-            refreshState: {
-                handler: function (newValue, oldValue) {
-                    if (newValue === true) {
-                        console.log("I should refresh");
-                        /**
-                         * forces a refresh of the table data
-                         * looks at the refs, which we have set tha table as "table" so it refreshes that item
-                         * https://bootstrap-vue.js.org/docs/components/table/#force-refreshing-of-table-data
-                         */
-                        this.$refs.table.refresh();
-                        this.refreshState = false;
-                    }
-                }
-            }
-        },
         data() { //all of the data belonging to the table
             return {
-                //https://bootstrap-vue.js.org/docs/components/table/#automated-table-busy-state
-                //do not actually need to set this anywhere when using a provider
-                isBusy: false, //is true when the data is loading.
                 transProps: { //set the name of the table transition
                     name: 'flip-list'
                 },
@@ -144,11 +116,11 @@
                 fields: [ //the fields to display
                     {
                         key: 'vehicleID',
-                        label: 'ID',
+                        label: 'ID', //change the label
                         sortable: true
                     },
                     {
-                        key: 'make',
+                        key: 'make', //the rest of these will be Title Cased by vue
                         sortable: true
                     },
                     {
@@ -164,14 +136,12 @@
                         sortable: true
                     },
                     {
-                        key: 'actions',
-                        label: 'icon here'
+                        key: 'actions'
                     }
                 ]
             }
         },
         methods: {
-
             /**
              * makes the axios call
              * returns in the form of a promise, which says, "the data is on the way",
@@ -179,6 +149,7 @@
              * @returns {Promise<any> | Promise<T | Array>}
              */
             provider() {
+                //https://bootstrap-vue.js.org/docs/components/table/#automated-table-busy-state
                 //The provider automatically handles the isBusy
                 //(ie: sets it true at the beginning of the method, and false at the end), so no need to directly code it
 
@@ -195,27 +166,28 @@
                     console.log(errors);
                     return [];
                 });
-
             },
             /**
              * event called when a vehicle's edit button is clicked
              * emits the edit event with the vehicle
-             * @param vehicle
+             * @param vehicle: to be edited
              */
-            edit(vehicle) {
+            async edit(vehicle) {
+                //emit the edit event, passing along the vehicle
+                await this.$emit('edit', vehicle);
+                //and then show the modal after the previous line has FINISHED (await)
+                //it has to be asynchronous because the two events firing simultaneously was blocking the modal, so have to wait for it
                 this.$bvModal.show('inputModal');
             },
-
-
             /**
              * event called when the add button is clicked. It just emits an add event.
              */
-            add() {
-                this.$emit('add');
+            async add() {
+                //basically the same as edit except that we're not sending back a vehicle object
+                await this.$emit('add'); //emit the add event
+                this.$bvModal.show('inputModal'); //then show the vehicle
             }
-
         }
-
     }
 </script>
 
