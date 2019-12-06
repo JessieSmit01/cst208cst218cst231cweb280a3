@@ -121,22 +121,19 @@ class Vehicle extends ORM\Entity
     //10 characters max.
     public $type;
 
-    /**
-     * This function will validate the vehicle year
+    /**This function will validate the vehicle year
      * Null values are allowed
      * Will check to make sure that the value for year turns into a valid date (if any character is entered besides an integer, vDate will equal false
      *  meaning the year was invalid
      * Also compares the year to the current year plus two years
      *  The vehicle year must be less than the current year plus 2 years.
-     * @return array - an array of errors
+     * @return array - array of errors. empty if no errors
+     * @throws Exception -exception if DateTime could not be created
      */
     public function validate_year()
     {
         $validationResult = [];
-        if($this->year === null || $this->year === '') //check if year is null or empty - it is not required so just return no errors
-        {
-            return $validationResult;
-        }
+
         //https://www.w3schools.com/php/php_date.asp - referenced this web site to help me in creating and comparing date time objects in PHP
         //https://www.w3schools.com/Php/func_date_date_create.asp used to help aid in using the date_create function
         $vDate = date_create("January 1 " . $this->year);
@@ -185,7 +182,7 @@ class Vehicle extends ORM\Entity
         //type must be an nvarchar with max length of 10 and not be null
         $this->addColumnDefinition("type", "nvarchar(10)", "not null"); //required
         //year must be an integer
-        $this->addColumnDefinition("year", "INTEGER", ""); //not specified as required
+        $this->addColumnDefinition("year", "INTEGER", "not null"); //not specified as required
 
 
         //add display names for each field

@@ -7,6 +7,7 @@
     <b-modal
             v-bind:title="title"
             id="inputModal"
+            @show="resetDefaultVehicleData"
             v-bind:no-close-on-esc="loading"
             v-bind:no-close-on-backdrop="loading"
             v-bind:hide-header-close="loading"
@@ -45,7 +46,6 @@
             <div v-else>
                 <b-button variant="primary" title="Save" @click="saveVehicle" :disabled=true><b-spinner class="align-middle"></b-spinner>
                     <strong>Saving...</strong></b-button>
-
             </div>
         </template>
     </b-modal>
@@ -105,8 +105,11 @@
                 this.status.code = -1;
                 // newVehicle is connected to the text inputs, so we need to send that object to save new values to the database
                 this.$emit('save', this.newVehicle, this.errors, this.status);
+            },
+            resetDefaultVehicleData: function()
+            {
+                this.newVehicle = Object.assign({}, this.vehicle);
             }
-
         },
         computed: {
             /**
@@ -125,10 +128,5 @@
                 }
             }
         }
-        //TODO: We have a style section below- do we need it?
     }
 </script>
-
-<style type="text/css" scoped>
-
-</style>
