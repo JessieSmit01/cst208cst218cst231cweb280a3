@@ -30,7 +30,9 @@
 
             <!-- form input for the type of the vehicle, with four radio buttons -->
             <b-form-group :invalid-feedback="errors.type" :state="states.type" label="Type" :disabled="loading">
-                <b-form-radio-group v-model="newVehicle.type">
+
+                <b-form-radio-group v-model="newVehicle.type" @change="errors.type=null">
+
                     <b-form-radio
                             v-for="type in vehicleTypes" v-bind:value="type" v-bind:key="type" name="vehicleType">{{type}}</b-form-radio>
                 </b-form-radio-group>
@@ -38,11 +40,11 @@
         </b-container>
         <!--        https://bootstrap-vue.js.org/docs/components/modal/#variants: used the example here for the footer template to override the default footer-->
         <template v-slot:modal-footer>
-            <!--            When the modal is not loading, show the normal save button-->
+<!--            When the modal is not loading, show the normal save button-->
             <div v-if="!loading">
                 <b-button class="far fa-save" variant="primary" title="Save" @click="saveVehicle"/>
             </div>
-            <!--           When the modal is loading, shaw a button with a spinner that says "saving" -->
+<!--           When the modal is loading, shaw a button with a spinner that says "saving" -->
             <div v-else>
                 <b-button variant="primary" title="Save" @click="saveVehicle" :disabled=true><b-spinner class="align-middle"></b-spinner>
                     <strong>Saving...</strong></b-button>
@@ -80,11 +82,10 @@
         data: function() {
             return {
                 // copy data from the passed in vehicle to the newVehicle (temporary) object
-                newVehicle: Object.assign({}, this.vehicle),
+                newVehicle: {},
                 errors: {}, //no initial errors
                 status: {code: 0}, // status code of 0 means nothing to update
-                vehicleTypes: ['Sedan', 'Compact', 'Cross Over', 'Truck'] //valid vehicle types
-
+                vehicleTypes: ['Sedan', 'Compact', 'Cross Over', 'Truck'], //valid vehicle types,
             }
         },
         methods: {
@@ -106,9 +107,23 @@
                 // newVehicle is connected to the text inputs, so we need to send that object to save new values to the database
                 this.$emit('save', this.newVehicle, this.errors, this.status);
             },
+            /**
+             * fires when the modal is open: make sure to clean out old data and errors.
+             */
             resetDefaultVehicleData: function()
             {
+                //re-assign the vehicle
                 this.newVehicle = Object.assign({}, this.vehicle);
+
+                //nullify all errors.
+                this.errors = {
+                    vehicleID: null,
+                    make: null,
+                    model: null,
+                    type: null,
+                    year: null
+                };
+
             }
         },
         computed: {

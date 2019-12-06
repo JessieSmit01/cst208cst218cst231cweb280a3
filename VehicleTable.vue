@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <b-col lg="6">
             <b-form-group
                     label="Filter"
@@ -37,6 +36,7 @@
             </b-form-group>
         </b-col>
         <!-- TABLE PROPERTIES: all from https://bootstrap-vue.js.org/docs/components/table
+            busy.sync: change the isBusy variable to match the table's busy state
             id: so the refresh method knows what to refer to,
             striped: cosmetic, makes it look nice, hover: gives it a little styling change on hover
             head-variant: looks nice, contrast!
@@ -48,6 +48,7 @@
             items: link to the provider to tell it to get the data from there
          -->
         <b-table
+                :busy.sync="isBusy"
                 id="vehicleTable"
                 striped
                 hover
@@ -57,15 +58,17 @@
                 :tbody-transition-props="transProps"
                 :fields="fields"
                 :filter="filter"
-                :items="provider"
+                :items="vehicleProvider"
         >
             <!-- A custom formatted header cell for the actions column
                 the "head" links to the appropriate field, "data" to the table's data, click to the add method, rest is formatting
+                disable the button according to the busy state of the table
                 names of colour variants: https://bootstrap-vue.js.org/docs/reference/color-variants/
             -->
             <!-- https://bootstrap-vue.js.org/docs/components/table/#header-and-footer-custom-rendering-via-scoped-slots -->
-            <template v-slot:head(actions)="data" >
+            <template v-slot:head(actions)="data">
                 <b-button
+                        v-bind:disabled="isBusy"
                         @click="add()"
                         class="fas fa-plus"
                         title="Add"
@@ -109,6 +112,9 @@
         name: "VehicleTable", //how to refer to this component
         data() { //all of the data belonging to the table
             return {
+                //this had to be added back in so that the add button could be disabled when the table is busy.
+                //the .sync in the b-table is so that it goes two ways (ie: the table controls the value of isBusy, matching it to its busy state)
+                isBusy: false,
                 transProps: { //set the name of the table transition
                     name: 'flip-list'
                 },
@@ -148,7 +154,7 @@
              * which when it resolves, will return the data from the response (which is then set to the items)
              * @returns {Promise<any> | Promise<T | Array>}
              */
-            provider() {
+            vehicleProvider() {
                 //https://bootstrap-vue.js.org/docs/components/table/#automated-table-busy-state
                 //The provider automatically handles the isBusy
                 //(ie: sets it true at the beginning of the method, and false at the end), so no need to directly code it
@@ -177,6 +183,7 @@
                 await this.$emit('edit', vehicle);
                 //and then show the modal after the previous line has FINISHED (await)
                 //it has to be asynchronous because the two events firing simultaneously was blocking the modal, so have to wait for it
+                //to show the modal, reference the iD: https://bootstrap-vue.js.org/docs/components/modal/#using-thisbvmodalshow-and-thisbvmodalhide-instance-methods
                 this.$bvModal.show('inputModal');
             },
             /**
@@ -185,7 +192,6 @@
             async add() {
                 //the "add" functions fine without being asynchronous, but it's possible that an edge case would break it
                 await this.$emit('add' ); //emit the add event
-
                 this.$bvModal.show('inputModal'); //then show the vehicle
             }
         }
@@ -193,6 +199,7 @@
 </script>
 
 <style scoped>
+/*style the table sort transition*/
     .flip-list-move {
         transition: transform .3s;
     }
