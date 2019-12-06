@@ -37,6 +37,7 @@
             :title="modalTitle"
             :loading="isSaving"
             @save="sendVehicle"
+            :loading="isSaving"
     ></vehicle-input>
 
 <!--    DEBUG SECTION... KEEP OR DELETE???-->
@@ -124,8 +125,7 @@
                             this.sqlDebug = response.data;
                         }
                     }
-
-                }).finally(()=>{this.isSaving = false})
+                }).finally(()=>{this.isSaving = false});
             }
         },
         components: {
