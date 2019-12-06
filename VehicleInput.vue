@@ -1,11 +1,15 @@
 <template>
     <!-- title does not currently change whether editing or creating new vehicle -->
+    <!--https://bootstrap-vue.js.org/docs/components/modal/ This website helped me in finding events for the modal.
+    I was looking for events to fire when the modal was closed or forced to hide and cancelled.-->
     <b-modal
             v-bind:title="title"
             hide-footer
             ref="input-modal"
             id="inputModal"
-            @cancel="newVehicle={}"
+            @cancel="resetOriginalValues"
+            @close="resetOriginalValues"
+            @hide="resetOriginalValues"
     >
         <!-- form input for the make of the vehicle -->
         <label>Make:</label>
@@ -87,6 +91,10 @@
                 // newVehicle is connected to the text inputs, so we need to send that object to save new values to the database
                 this.$emit('save', this.newVehicle, this.errors, this.status);
             },
+            resetOriginalValues: function(){
+                //Learned in class
+                this.newVehicle = Object.assign({}, this.vehicle)
+            }
 
         },
         computed: {
