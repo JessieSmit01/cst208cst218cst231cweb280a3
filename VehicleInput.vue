@@ -41,8 +41,14 @@
         </b-container>
 <!--        https://bootstrap-vue.js.org/docs/components/modal/#variants: used the example here for the footer template to override the default footer-->
         <template v-slot:modal-footer>
-            <div>
-                <b-button class="far fa-save" variant="primary" title="Save" @click="saveVehicle" :disabled="isBusy"/>
+            <div v-if="!loading">
+                <b-button class="far fa-save" variant="primary" title="Save" @click="saveVehicle" :disabled="loading"/>
+            </div>
+            <div v-else>
+
+                <b-button variant="primary" title="Save" @click="saveVehicle" :disabled="loading"><b-spinner class="align-middle"></b-spinner>
+                    <strong>Saving...</strong></b-button>
+
             </div>
         </template>
     </b-modal>
@@ -66,6 +72,11 @@
             title: {
                 type: String,
                 default: ()=>"Create Vehicle"
+            },
+
+            loading: {
+                type: Boolean,
+                default: ()=> false
             }
         },
         data: function() {
@@ -120,7 +131,7 @@
                 }
             },
             isBusy: function() {
-                return true;
+                return false;
             }
         }
         //TODO: We have a style section below- do we need it?

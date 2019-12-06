@@ -183,8 +183,9 @@
              * event called when the add button is clicked. It just emits an add event.
              */
             async add() {
-                //basically the same as edit except that we're not sending back a vehicle object
-                await this.$emit('add'); //emit the add event
+                //the "add" functions fine without being asynchronous, but it's possible that an edge case would break it
+                await this.$emit('add' ); //emit the add event
+
                 this.$bvModal.show('inputModal'); //then show the vehicle
             }
         }

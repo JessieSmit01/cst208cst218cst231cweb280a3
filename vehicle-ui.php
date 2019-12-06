@@ -36,6 +36,7 @@
             :vehicle="vehicle"
             :title="modalTitle"
             @save="sendVehicle"
+            :loading="isSaving"
     ></vehicle-input>
 
 <!--    DEBUG SECTION... KEEP OR DELETE???-->
@@ -60,7 +61,8 @@
             searchString: '', //string to search by
             sqlDebug: '', //also debug
             vehicle: {}, //current vehicle being added/edited
-            modalTitle: '' //what to title the modal
+            modalTitle: '' ,//what to title the modal
+            isSaving: false
         },
         methods: {
             /**
@@ -95,15 +97,16 @@
              * @param errorMessages: do we need this?
              * @param status: or this?
              */
-            sendVehicle: function(vehicle, errorMessages, status) {
+             sendVehicle: function(vehicle, errorMessages, status) {
+                this.isSaving = true;
+
                 axios({
                     method: vehicle.vehicleID ? "put" : "post", // determine which method by whether or not vehicleID is set
                     url: "vehicle-api.php", //send to the API
                     data: vehicle //give it the vehicle object
-                }).then(response => { //on success,
+                }).then(response  => { //on success,
                     this.axiosResult = response; //show the axios result in the footer
                     status.code = 1; // let the component know that the vehicle was successfully added to the database
-
                     this.$bvModal.hide('inputModal'); //and hide the modal: https://bootstrap-vue.js.org/docs/components/modal#using-thisbvmodalshow-and-thisbvmodalhide-instance-methods
                     this.$root.$emit('bv::refresh::table', 'vehicleTable'); //refresh the table: https://bootstrap-vue.js.org/docs/components/table/#force-refreshing-of-table-data
 
@@ -122,7 +125,7 @@
                             this.sqlDebug = response.data;
                         }
                     }
-                });
+                }).finally(()=>{this.isSaving = false});
             }
         },
         components: {
