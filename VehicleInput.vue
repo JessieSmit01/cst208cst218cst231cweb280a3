@@ -5,6 +5,7 @@
             v-bind:busy="isBusy"
             ref="input-modal"
             id="inputModal"
+            @show="resetDefaultVehicleData"
             v-bind:no-close-on-esc="isBusy"
             v-bind:no-close-on-backdrop="isBusy"
             v-bind:hide-header-close="isBusy"
@@ -106,6 +107,10 @@
                 this.status.code = -1;
                 // newVehicle is connected to the text inputs, so we need to send that object to save new values to the database
                 this.$emit('save', this.newVehicle, this.errors, this.status);
+            },
+            resetDefaultVehicleData: function()
+            {
+                this.newVehicle = Object.assign({}, this.vehicle);
             },
             disableModal: function() {
 
