@@ -17,9 +17,7 @@
             v-bind:hide-header-close="loading"
     >
         <b-container>
-<<<<<<< HEAD
-            <!-- form input for the make of the vehicle -->
-=======
+
             <!--
                 Form input for the make of the vehicle
                 :invalid-feedback -> take the error received and display it for this form group
@@ -30,7 +28,6 @@
                 trim -> get rid of excess spaces for the entered value
                 @keyDown -> get rid of any currently shown errors
             -->
->>>>>>> carson
             <b-form-group :invalid-feedback="errors.make" :state="states.make" label="Make" :disabled="loading">
                 <b-form-input v-model="newVehicle.make" :state="states.make" trim @keyDown="errors.make=null"></b-form-input>
             </b-form-group>
